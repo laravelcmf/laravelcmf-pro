@@ -4,6 +4,7 @@
  */
 import { extend } from 'umi-request';
 import { notification } from 'antd';
+import store from '@/utils/store';
 
 const codeMessage = {
   200: '服务器成功返回请求的数据。',
@@ -49,8 +50,40 @@ const errorHandler = (error: { response: Response }): Response => {
  * 配置request请求时的默认参数
  */
 const request = extend({
+  useCache: false, // 是否使用缓存,只有get时有效, 默认关闭, 启用后如果命中缓存, response中有useCache=true. 另: 内存缓存, 刷新就没.
   errorHandler, // 默认错误处理
-  credentials: 'include', // 默认请求是否带上cookie
+  // credentials: 'include', // 默认请求是否带上cookie
+  getResponse: true, // 是否获取response源
+});
+
+function getAccessToken(): string {
+  const { tokenType, accessToken } = store.getAccessToken();
+  if (!tokenType || !accessToken) {
+    return '';
+  }
+
+  return `${tokenType} ${accessToken}`;
+}
+
+request.interceptors.request.use((url, options) => {
+  const auth = getAccessToken();
+  if (auth) {
+    return {
+      url,
+      options: {
+        ...options,
+        interceptors: true,
+        headers: {
+          ...options.headers,
+          Authorization: getAccessToken(),
+        },
+        params: {
+          ...options.params,
+        },
+      },
+    };
+  }
+  return { url, options };
 });
 
 export default request;
