@@ -13,13 +13,14 @@ import styles from './style.less';
 import { LoginParamsType } from '@/services/login';
 import { ConnectState } from '@/models/connect';
 
-const { Tab, UserName, Password, Mobile, Captcha, Submit } = LoginComponents;
+const { UserName, Password, Submit } = LoginComponents;
 
 interface LoginProps {
   dispatch: Dispatch<AnyAction>;
   userLogin: StateType;
   submitting?: boolean;
 }
+
 interface LoginState {
   type: string;
   autoLogin: boolean;
@@ -89,8 +90,8 @@ class Login extends Component<LoginProps, LoginState> {
   );
 
   render() {
-    const { userLogin = {}, submitting } = this.props;
-    const { status, type: loginType } = userLogin;
+    const { submitting } = this.props;
+    // const { status, type: loginType } = userLogin;
     const { type, autoLogin } = this.state;
     return (
       <div className={styles.main}>
@@ -102,76 +103,32 @@ class Login extends Component<LoginProps, LoginState> {
             this.loginForm = form;
           }}
         >
-          <Tab key="account" tab={formatMessage({ id: 'user-login.login.tab-login-credentials' })}>
-            {status === 'error' &&
-              loginType === 'account' &&
-              !submitting &&
-              this.renderMessage(
-                formatMessage({ id: 'user-login.login.message-invalid-credentials' }),
-              )}
-            <UserName
-              name="userName"
-              placeholder={`${formatMessage({ id: 'user-login.login.userName' })}: admin or user`}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.userName.required' }),
-                },
-              ]}
-            />
-            <Password
-              name="password"
-              placeholder={`${formatMessage({ id: 'user-login.login.password' })}: ant.design`}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.password.required' }),
-                },
-              ]}
-              onPressEnter={e => {
-                e.preventDefault();
-                if (this.loginForm) {
-                  this.loginForm.validateFields(this.handleSubmit);
-                }
-              }}
-            />
-          </Tab>
-          <Tab key="mobile" tab={formatMessage({ id: 'user-login.login.tab-login-mobile' })}>
-            {status === 'error' &&
-              loginType === 'mobile' &&
-              !submitting &&
-              this.renderMessage(
-                formatMessage({ id: 'user-login.login.message-invalid-verification-code' }),
-              )}
-            <Mobile
-              name="mobile"
-              placeholder={formatMessage({ id: 'user-login.phone-number.placeholder' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.phone-number.required' }),
-                },
-                {
-                  pattern: /^1\d{10}$/,
-                  message: formatMessage({ id: 'user-login.phone-number.wrong-format' }),
-                },
-              ]}
-            />
-            <Captcha
-              name="captcha"
-              placeholder={formatMessage({ id: 'user-login.verification-code.placeholder' })}
-              countDown={120}
-              onGetCaptcha={this.onGetCaptcha}
-              getCaptchaButtonText={formatMessage({ id: 'user-login.form.get-captcha' })}
-              getCaptchaSecondText={formatMessage({ id: 'user-login.captcha.second' })}
-              rules={[
-                {
-                  required: true,
-                  message: formatMessage({ id: 'user-login.verification-code.required' }),
-                },
-              ]}
-            />
-          </Tab>
+          <UserName
+            name="userName"
+            placeholder={`${formatMessage({ id: 'user-login.login.userName' })}`}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'user-login.userName.required' }),
+              },
+            ]}
+          />
+          <Password
+            name="password"
+            placeholder={`${formatMessage({ id: 'user-login.login.password' })}`}
+            rules={[
+              {
+                required: true,
+                message: formatMessage({ id: 'user-login.password.required' }),
+              },
+            ]}
+            onPressEnter={e => {
+              e.preventDefault();
+              if (this.loginForm) {
+                this.loginForm.validateFields(this.handleSubmit);
+              }
+            }}
+          />
           <div>
             <Checkbox checked={autoLogin} onChange={this.changeAutoLogin}>
               <FormattedMessage id="user-login.login.remember-me" />
