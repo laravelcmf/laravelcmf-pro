@@ -1,12 +1,19 @@
 const accessTokenKey = 'access_token';
 
+export interface TokenParamsType {
+  token_type: string;
+  expires_in: number;
+  access_token: string;
+  refresh_token: string;
+}
+
 export default class store {
   static active = false;
 
   // 设定访问令牌
-  static setAccessToken(token: string): void {
+  static setAccessToken(paramsType: TokenParamsType): void {
     this.active = true;
-    sessionStorage.setItem(accessTokenKey, JSON.stringify(token));
+    sessionStorage.setItem(accessTokenKey, JSON.stringify(paramsType));
   }
 
   // 获取访问令牌

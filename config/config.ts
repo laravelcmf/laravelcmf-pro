@@ -177,8 +177,8 @@ export default {
   },
   // chainWebpack: webpackPlugin,
   proxy: {
-    '/api/': {
-      target: 'http://laravelcmf.test/',
+    '/api': {
+      target: 'http://laravelcmf.test',
       changeOrigin: true,
     },
   },

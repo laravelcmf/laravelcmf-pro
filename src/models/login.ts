@@ -3,9 +3,10 @@ import { Effect } from 'dva';
 import { stringify } from 'querystring';
 import router from 'umi/router';
 
-import { fakeAccountLogin, getFakeCaptcha } from '@/services/login';
-import { setAuthority } from '@/utils/authority';
+import store from '@/utils/store';
 import { getPageQuery } from '@/utils/utils';
+import { setAuthority } from '@/utils/authority';
+import { AccountLogin, getFakeCaptcha } from '@/services/login';
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -35,13 +36,16 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(fakeAccountLogin, payload);
+      const { response, data } = yield call(AccountLogin, payload);
+      console.log('response:', response);
       yield put({
         type: 'changeLoginStatus',
         payload: response,
       });
       // Login successfully
-      if (response.status === 'ok') {
+      if (response.status === 201 && data.expires_in && data.expires_in > 0) {
+        store.setAccessToken(data);
+
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
         let { redirect } = params as { redirect: string };

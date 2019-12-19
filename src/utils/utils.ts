@@ -59,3 +59,19 @@ export const getRouteAuthority = (path: string, routeData: Route[]) => {
   });
   return authorities;
 };
+
+/**
+ * 判断值是否是日期类型
+ * @param val
+ */
+export function isDate(val: any): val is Date {
+  return Object.prototype.toString.call(val) === '[object Date]';
+}
+
+/**
+ * 判断值是否是对象类型
+ * @param val
+ */
+export function isPlainObject(val: any): val is Object {
+  return toString.call(val) === '[object Object]';
+}

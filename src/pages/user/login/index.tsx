@@ -40,14 +40,12 @@ class Login extends Component<LoginProps, LoginState> {
   };
 
   handleSubmit = (err: unknown, values: LoginParamsType) => {
-    const { type } = this.state;
     if (!err) {
       const { dispatch } = this.props;
       dispatch({
         type: 'login/login',
         payload: {
           ...values,
-          type,
         },
       });
     }
