@@ -28,8 +28,15 @@ const codeMessage = {
  * 异常处理程序
  */
 const errorHandler = (error: { response: Response }): Response => {
-  const { response } = error;
-  if (response && response.status) {
+  const { response, data } = error;
+  if (response && data && data.message) {
+    const { status, url } = response;
+
+    notification.error({
+      message: `请求错误 ${status}: ${url}`,
+      description: data.message,
+    });
+  } else if (response && response.status) {
     const errorText = codeMessage[response.status] || response.statusText;
     const { status, url } = response;
 
@@ -43,7 +50,10 @@ const errorHandler = (error: { response: Response }): Response => {
       message: '网络异常',
     });
   }
-  return response;
+  return {
+    data,
+    response,
+  };
 };
 
 /**

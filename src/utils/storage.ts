@@ -72,4 +72,4 @@ const clear = (): void => {
   sessionStorage.clear();
 };
 
-export default { setStore, getStore, removeItem, clear };
+export { setStore, getStore, removeItem, clear };
