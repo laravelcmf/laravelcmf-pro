@@ -67,7 +67,9 @@ const request = extend({
 });
 
 function getAccessToken(): string {
-  const { tokenType, accessToken } = store.getAccessToken();
+  const token = store.getAccessToken();
+  const tokenType = token.token_type;
+  const accessToken = token.access_token;
   if (!tokenType || !accessToken) {
     return '';
   }

@@ -5,7 +5,6 @@ import router from 'umi/router';
 
 import store from '@/utils/store';
 import { getPageQuery } from '@/utils/utils';
-import { setAuthority } from '@/utils/authority';
 import { AccountLogin, getFakeCaptcha } from '@/services/login';
 
 export interface StateType {
@@ -37,12 +36,13 @@ const Model: LoginModelType = {
   effects: {
     *login({ payload }, { call, put }) {
       const { response, data } = yield call(AccountLogin, payload);
-      yield put({
-        type: 'changeLoginStatus',
-        payload: response,
-      });
       // Login successfully
-      if (response.status === 201 && data.expires_in && data.expires_in > 0) {
+      if (response && data && response.status === 201 && data.expires_in && data.expires_in > 0) {
+        yield put({
+          type: 'changeLoginStatus',
+          payload: response,
+        });
+
         store.setAccessToken(data);
 
         const urlParams = new URL(window.location.href);
@@ -84,7 +84,7 @@ const Model: LoginModelType = {
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      setAuthority(payload.currentAuthority);
+      // setAuthority(payload.currentAuthority);
       return {
         ...state,
         status: payload.status,

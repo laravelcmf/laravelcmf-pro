@@ -16,7 +16,7 @@ export default class store {
   }
 
   // 获取访问令牌
-  static getAccessToken(): any {
+  static getAccessToken(): TokenParamsType {
     return getStore(accessTokenKey);
   }
 
