@@ -5,7 +5,7 @@ import router from 'umi/router';
 
 import store from '@/utils/store';
 import { getPageQuery } from '@/utils/utils';
-import { AccountLogin, getFakeCaptcha } from '@/services/login';
+import { AccountLogin } from '@/services/login';
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -18,7 +18,6 @@ export interface LoginModelType {
   state: StateType;
   effects: {
     login: Effect;
-    getCaptcha: Effect;
     logout: Effect;
   };
   reducers: {
@@ -62,10 +61,6 @@ const Model: LoginModelType = {
         }
         router.replace(redirect || '/');
       }
-    },
-
-    *getCaptcha({ payload }, { call }) {
-      yield call(getFakeCaptcha, payload);
     },
 
     logout() {

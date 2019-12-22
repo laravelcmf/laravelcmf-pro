@@ -1,33 +1,75 @@
 export default [
   {
-    path: '/user',
+    path: '/login',
     component: '../layouts/UserLayout',
     routes: [
-      { path: '/user', redirect: '/user/login' },
-      { path: '/user/login', component: './Login/Index' },
+      {
+        name: 'login',
+        path: '/login',
+        component: './user/login',
+      },
     ],
   },
   {
     path: '/',
-    component: '../layouts/BasicLayout',
+    component: '../layouts/SecurityLayout',
     routes: [
-      { path: '/', redirect: '/dashboard' },
-      { path: '/dashboard', component: './Dashboard/Home' },
       {
-        path: '/example',
-        routes: [{ path: '/example/demo', component: './Demo/DemoList' }],
+        path: '/',
+        component: '../layouts/BasicLayout',
+        // authority: ['admin', 'user'],
+        routes: [
+          {
+            path: '/',
+            redirect: '/welcome',
+          },
+          {
+            path: '/welcome',
+            name: 'welcome',
+            icon: 'smile',
+            component: './Welcome',
+          },
+          {
+            path: '/demo',
+            name: 'demo',
+            icon: 'database', // component: './demo',
+          },
+          {
+            path: '/user',
+            name: 'user',
+            icon: 'user',
+            component: './user/list',
+          },
+          {
+            path: '/system',
+            name: 'system',
+            icon: 'setting',
+            routes: [
+              {
+                path: '/system/menu',
+                name: 'menu',
+                icon: 'menu',
+                component: './system/menu',
+              },
+              {
+                path: '/system/role',
+                name: 'role',
+                icon: 'user',
+                component: './system/role',
+              },
+            ],
+          },
+          {
+            component: './404',
+          },
+        ],
       },
       {
-        path: '/system',
-        routes: [
-          { path: '/system/menu', component: './Menu/MenuList' },
-          { path: '/system/role', component: './Role/RoleList' },
-          { path: '/system/user', component: './User/UserList' },
-        ],
+        component: './404',
       },
     ],
   },
   {
-    component: '404',
+    component: './404',
   },
 ];

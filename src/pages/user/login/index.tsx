@@ -61,7 +61,6 @@ class Login extends Component<LoginProps, LoginState> {
 
   render() {
     const { submitting } = this.props;
-    // const { status, type: loginType } = userLogin;
     const { type, autoLogin } = this.state;
     return (
       <div className={styles.main}>
