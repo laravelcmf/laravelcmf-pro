@@ -16,8 +16,12 @@ export default class store {
   }
 
   // 获取访问令牌
-  static getAccessToken(): TokenParamsType {
-    return getStore(accessTokenKey);
+  static getAccessToken(): TokenParamsType | '' {
+    const tokenParm = getStore(accessTokenKey);
+    if (!tokenParm || tokenParm === '') {
+      return '';
+    }
+    return tokenParm;
   }
 
   // 清空访问令牌

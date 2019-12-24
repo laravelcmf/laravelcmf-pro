@@ -4,17 +4,24 @@ import { Reducer } from 'redux';
 import { queryCurrent, query as queryUsers } from '@/services/user';
 
 export interface CurrentUser {
-  avatar?: string;
+  id?: number;
   name?: string;
-  title?: string;
-  group?: string;
-  signature?: string;
-  tags?: {
-    key: string;
-    label: string;
-  }[];
-  userid?: string;
-  unreadCount?: number;
+  email?: string;
+  portrait?: string;
+  login_count?: number;
+  last_login_ip?: string;
+  status?: number;
+  role?: {
+    id: number;
+    name: string;
+    sequence: number;
+    memo: string;
+    created_at: string;
+    updated_at: string;
+  };
+  role_id?: number;
+  created_at?: string;
+  updated_at?: string;
 }
 
 export interface UserModelState {
@@ -30,7 +37,6 @@ export interface UserModelType {
   };
   reducers: {
     saveCurrentUser: Reducer<UserModelState>;
-    changeNotifyCount: Reducer<UserModelState>;
   };
 }
 
@@ -62,22 +68,7 @@ const UserModel: UserModelType = {
     saveCurrentUser(state, action) {
       return {
         ...state,
-        currentUser: action.payload || {},
-      };
-    },
-    changeNotifyCount(
-      state = {
-        currentUser: {},
-      },
-      action,
-    ) {
-      return {
-        ...state,
-        currentUser: {
-          ...state.currentUser,
-          notifyCount: action.payload.totalCount,
-          unreadCount: action.payload.unreadCount,
-        },
+        currentUser: action.payload.data || {},
       };
     },
   },

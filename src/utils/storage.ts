@@ -13,10 +13,10 @@ const setStore = (key: string, value: any, maxAge?: number): void => {
   if (typeof value !== 'string') {
     data = JSON.stringify(value);
   }
-  sessionStorage.setItem(key, data);
+  localStorage.setItem(key, data);
   if (maxAge) {
     const expireTime = new Date().getTime() / 1000;
-    sessionStorage.setItem(`${key}_expire`, JSON.stringify(expireTime + maxAge));
+    localStorage.setItem(`${key}_expire`, JSON.stringify(expireTime + maxAge));
   }
 };
 
@@ -29,8 +29,8 @@ const getStore = (key: string): any => {
     return null;
   }
 
-  const content = sessionStorage.getItem(key);
-  const expireStr = sessionStorage.getItem(`${key}_expire`);
+  const content = localStorage.getItem(key);
+  const expireStr = localStorage.getItem(`${key}_expire`);
 
   if (expireStr) {
     const now = new Date().getTime() / 1000;
@@ -61,15 +61,15 @@ const removeItem = (key: string): void => {
     return;
   }
 
-  sessionStorage.removeItem(key);
-  sessionStorage.removeItem(`${key}_expire`);
+  localStorage.removeItem(key);
+  localStorage.removeItem(`${key}_expire`);
 };
 
 /**
  *  Clear all storage
  */
 const clear = (): void => {
-  sessionStorage.clear();
+  localStorage.clear();
 };
 
 export { setStore, getStore, removeItem, clear };
