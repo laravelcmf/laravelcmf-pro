@@ -1,33 +1,89 @@
 import { Reducer } from 'redux';
 import { Subscription, Effect } from 'dva';
 
-import { NoticeIconData } from '@/components/NoticeIcon';
-import { queryNotices } from '@/services/user';
-import { ConnectState } from './connect.d';
+import { queryCurrent, queryMenuTree } from '@/services/user';
 
-export interface NoticeItem extends NoticeIconData {
-  id: string;
-  type: string;
-  status: string;
+export interface CurrentUser {
+  id?: number;
+  name?: string;
+  email?: string;
+  portrait?: string;
+  login_count?: number;
+  last_login_ip?: string;
+  status?: number;
+  role?: {
+    id: number;
+    name: string;
+    sequence: number;
+    memo: string;
+    created_at: string;
+    updated_at: string;
+  };
+  role_id?: number;
+  created_at?: string;
+  updated_at?: string;
+}
+
+export interface MenuAction {
+  id?: number;
+  code?: string;
+  name?: string;
+  menu_id?: number;
+}
+
+export interface MenuResource {
+  id?: number;
+  code?: string;
+  name?: string;
+  method?: string;
+  path?: string;
+  menu_id?: number;
+}
+
+export interface MenuParam {
+  id?: number;
+  name?: string;
+  parent_id?: number;
+  parent_path?: string;
+  sequence?: number;
+  icon?: string;
+  router?: string;
+  hidden?: number;
+  created_at?: string;
+  updated_at?: string;
+  actions?: MenuAction[];
+  resources?: MenuResource[];
 }
 
 export interface GlobalModelState {
-  collapsed: boolean;
-  notices: NoticeItem[];
+  title?: string;
+  copyRight?: string;
+  collapsed?: boolean;
+  defaultURL?: string;
+  openKeys?: [];
+  selectedKeys?: [];
+  user?: CurrentUser;
+  menuPaths?: { [key: string]: MenuParam };
+  menuMap?: { [key: string]: MenuParam };
+  menus?: MenuParam[];
 }
 
 export interface GlobalModelType {
   namespace: 'global';
   state: GlobalModelState;
   effects: {
-    fetchNotices: Effect;
-    clearNotices: Effect;
-    changeNoticeReadState: Effect;
+    menuEvent: Effect;
+    fetchUser: Effect;
+    fetchMenuTree: Effect;
   };
   reducers: {
     changeLayoutCollapsed: Reducer<GlobalModelState>;
-    saveNotices: Reducer<GlobalModelState>;
-    saveClearedNotices: Reducer<GlobalModelState>;
+    changeOpenKeys: Reducer<GlobalModelState>;
+    changeSelectedKeys: Reducer<GlobalModelState>;
+    saveUser: Reducer<GlobalModelState>;
+    saveMenuPaths: Reducer<GlobalModelState>;
+    saveMenuMap: Reducer<GlobalModelState>;
+    saveMenus: Reducer<GlobalModelState>;
   };
   subscriptions: { setup: Subscription };
 }
@@ -36,91 +92,130 @@ const GlobalModel: GlobalModelType = {
   namespace: 'global',
 
   state: {
-    collapsed: false,
-    notices: [],
+    ccollapsed: false,
+    title: '权限管理脚手架',
+    copyRight: '2019 LyricTian',
+    defaultURL: '/dashboard',
+    openKeys: [],
+    selectedKeys: [],
+    user: {
+      name: 'Admin',
+    },
+    menuPaths: {},
+    menuMap: {},
+    menus: [],
   },
 
   effects: {
-    *fetchNotices(_, { call, put, select }) {
-      const data = yield call(queryNotices);
-      yield put({
-        type: 'saveNotices',
-        payload: data,
-      });
-      const unreadCount: number = yield select(
-        (state: ConnectState) => state.global.notices.filter(item => !item.read).length,
+    *menuEvent({ pathname }, { put, select }) {
+      let p = pathname;
+      if (p === '/') {
+        p = yield select((state: { global: { defaultURL: string } }) => state.global.defaultURL);
+      }
+
+      const menuPaths = yield select(
+        (state: { global: { menuPaths: any } }) => state.global.menuPaths,
       );
+      const item = menuPaths[p];
+      if (!item) {
+        return;
+      }
+
+      if (item.parent_path && item.parent_path !== '') {
+        yield put({
+          type: 'changeOpenKeys',
+          payload: item.parent_path.split('/'),
+        });
+      }
+
       yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: data.length,
-          unreadCount,
-        },
+        type: 'changeSelectedKeys',
+        payload: [item.record_id],
       });
     },
-    *clearNotices({ payload }, { put, select }) {
+
+    // 获取我的信息
+    *fetchUser(_, { call, put }) {
+      const response = yield call(queryCurrent);
       yield put({
-        type: 'saveClearedNotices',
-        payload,
-      });
-      const count: number = yield select((state: ConnectState) => state.global.notices.length);
-      const unreadCount: number = yield select(
-        (state: ConnectState) => state.global.notices.filter(item => !item.read).length,
-      );
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: count,
-          unreadCount,
-        },
+        type: 'saveUser',
+        payload: response,
       });
     },
-    *changeNoticeReadState({ payload }, { put, select }) {
-      const notices: NoticeItem[] = yield select((state: ConnectState) =>
-        state.global.notices.map(item => {
-          const notice = { ...item };
-          if (notice.id === payload) {
-            notice.read = true;
+
+    // 获取我的树形菜单
+    *fetchMenuTree({ pathname }, { call, put }) {
+      const response = yield call(queryMenuTree);
+      const menuData = response.list || [];
+      yield put({
+        type: 'saveMenus',
+        payload: menuData,
+      });
+
+      const menuPaths = {};
+      const menuMap = {};
+
+      function fillData(data: any) {
+        for (let i = 0; i < data.length; i += 1) {
+          menuMap[data[i].id] = data[i];
+          if (data[i].router !== '') {
+            menuPaths[data[i].router] = data[i];
           }
-          return notice;
+          if (data[i].children && data[i].children.length > 0) {
+            fillData(data[i].children);
+          }
+        }
+      }
+
+      fillData(menuData);
+
+      yield [
+        put({
+          type: 'saveMenuPaths',
+          payload: menuPaths,
         }),
-      );
-
-      yield put({
-        type: 'saveNotices',
-        payload: notices,
-      });
-
-      yield put({
-        type: 'user/changeNotifyCount',
-        payload: {
-          totalCount: notices.length,
-          unreadCount: notices.filter(item => !item.read).length,
-        },
-      });
+        put({
+          type: 'saveMenuMap',
+          payload: menuMap,
+        }),
+        put({
+          type: 'menuEvent',
+          pathname,
+        }),
+      ];
     },
   },
 
   reducers: {
-    changeLayoutCollapsed(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    changeLayoutCollapsed(state, { payload }): GlobalModelState {
       return {
         ...state,
         collapsed: payload,
       };
     },
-    saveNotices(state, { payload }): GlobalModelState {
+    changeOpenKeys(state, { payload }) {
       return {
-        collapsed: false,
         ...state,
-        notices: payload,
+        openKeys: payload,
       };
     },
-    saveClearedNotices(state = { notices: [], collapsed: true }, { payload }): GlobalModelState {
+    changeSelectedKeys(state, { payload }) {
       return {
-        collapsed: false,
         ...state,
-        notices: state.notices.filter((item): boolean => item.type !== payload),
+        selectedKeys: payload,
       };
+    },
+    saveUser(state, { payload }) {
+      return { ...state, user: payload };
+    },
+    saveMenuPaths(state, { payload }) {
+      return { ...state, menuPaths: payload };
+    },
+    saveMenuMap(state, { payload }) {
+      return { ...state, menuMap: payload };
+    },
+    saveMenus(state, { payload }) {
+      return { ...state, menus: payload };
     },
   },
 

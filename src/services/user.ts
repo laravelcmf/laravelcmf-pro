@@ -1,13 +1,11 @@
 import request from '@/utils/request';
 
-export async function query(): Promise<any> {
-  return request('/api/users');
-}
-
+// 获取用户信息
 export async function queryCurrent(): Promise<any> {
   return request('/api/admins/me');
 }
 
-export async function queryNotices(): Promise<any> {
-  return request('/api/notices');
+// 查询当前用户菜单树
+export async function queryMenuTree(): Promise<any> {
+  return request('/api/admins/menus');
 }
