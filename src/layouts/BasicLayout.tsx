@@ -22,6 +22,7 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
+import { MenuParam } from '@/models/global';
 
 const noMatch = (
   <Result
@@ -45,6 +46,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   };
   settings: Settings;
   dispatch: Dispatch;
+  menuData: MenuParam[];
 }
 
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
@@ -56,14 +58,15 @@ export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
 /**
  * use Authorized check all menu item
  */
-const menuDataRender = (menuList: MenuDataItem[]): MenuDataItem[] =>
-  menuList.map(item => {
-    const localItem = {
-      ...item,
-      children: item.children ? menuDataRender(item.children) : [],
-    };
-    return Authorized.check(item.authority, localItem, null) as MenuDataItem;
-  });
+// const menuDataRender = (menus: MenuDataItem[]): MenuDataItem[] =>
+//   menus.map(item => {
+//     console.log('menus:', menus);
+//     const localItem = {
+//       ...item,
+//       children: item.children ? menuDataRender(item.children) : [],
+//     };
+//     return Authorized.check(item.authority, localItem, null) as MenuDataItem;
+//   });
 
 const defaultFooterDom = (
   <DefaultFooter
@@ -117,7 +120,7 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
 };
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
-  const { dispatch, children, settings, location = { pathname: '/' } } = props;
+  const { dispatch, menuData, children, settings, location = { pathname: '/' } } = props;
   /**
    * constructor
    */
@@ -126,6 +129,9 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
     if (dispatch) {
       dispatch({
         type: 'global/fetchUser',
+      });
+      dispatch({
+        type: 'global/fetchMenuTree',
       });
     }
   }, []);
@@ -181,7 +187,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         );
       }}
       footerRender={footerRender}
-      menuDataRender={menuDataRender}
+      menuDataRender={() => menuData}
       formatMessage={formatMessage}
       rightContentRender={() => <RightContent />}
       {...props}
@@ -196,6 +202,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
 export default connect(({ global, settings }: ConnectState) => ({
   collapsed: global.collapsed,
+  menuData: global.menus,
   global,
   settings,
 }))(BasicLayout);

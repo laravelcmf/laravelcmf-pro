@@ -42,34 +42,6 @@ export default [
               },
             ],
           },
-          // {
-          //   path: '/user',
-          //   name: 'user',
-          //   icon: 'user',
-          //   component: './user/list',
-          // },
-          //     {
-          //       path: '/system',
-          //       name: 'system',
-          //       icon: 'setting',
-          //       routes: [
-          //         {
-          //           path: '/system/menu',
-          //           name: 'menu',
-          //           icon: 'menu',
-          //           component: './system/menu',
-          //         },
-          //         {
-          //           path: '/system/role',
-          //           name: 'role',
-          //           icon: 'user',
-          //           component: './system/role',
-          //         },
-          //       ],
-          //     },
-          //     {
-          //       component: './404',
-          //     },
         ],
       },
       {

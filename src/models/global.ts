@@ -146,7 +146,7 @@ const GlobalModel: GlobalModelType = {
     // 获取我的树形菜单
     *fetchMenuTree({ pathname }, { call, put }) {
       const response = yield call(queryMenuTree);
-      const menuData = response.list || [];
+      const menuData = response.data || [];
       yield put({
         type: 'saveMenus',
         payload: menuData,
