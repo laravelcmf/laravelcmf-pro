@@ -8,7 +8,7 @@ export async function query(params: any) {
 }
 
 export async function queryTree(params: any) {
-  return request(`/api/${router}.tree?${stringify(params)}`);
+  return request(`/api/${router}/tree?${stringify(params)}`);
 }
 
 export async function get(params: any) {

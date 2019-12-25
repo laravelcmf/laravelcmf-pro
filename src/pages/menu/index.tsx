@@ -23,8 +23,7 @@ export interface MenuListState {
   treeSelectedKeys: Array<any>;
 }
 
-@connect(({ menu, loading }: ConnectState) => ({ menu, loading: loading.models.menu }))
-class Menu extends PureComponent<MenuListProps, MenuListState> {
+class MenuList extends PureComponent<MenuListProps, MenuListState> {
   constructor(props: MenuListProps) {
     super(props);
     this.state = {
@@ -196,12 +195,12 @@ class Menu extends PureComponent<MenuListProps, MenuListState> {
     data.map((item: any) => {
       if (item.children) {
         return (
-          <Tree.TreeNode title={item.name} key={item.record_id} dataRef={item}>
+          <Tree.TreeNode title={item.name} key={item.id} dataRef={item}>
             {this.renderTreeNodes(item.children)}
           </Tree.TreeNode>
         );
       }
-      return <Tree.TreeNode title={item.name} key={item.record_id} dataRef={item} />;
+      return <Tree.TreeNode title={item.name} key={item.id} dataRef={item} />;
     });
 
   renderSearchForm() {
@@ -247,8 +246,11 @@ class Menu extends PureComponent<MenuListProps, MenuListState> {
   }
 
   render() {
-    const { loading, menu } = this.props;
-    const { data, treeData, expandedKeys } = menu || {};
+    const {
+      loading,
+      menu: { data, treeData, expandedKeys },
+    } = this.props;
+
     const { list, pagination } = data || {};
     const { selectedRowKeys } = this.state;
 
@@ -382,4 +384,6 @@ class Menu extends PureComponent<MenuListProps, MenuListState> {
   }
 }
 
-export default Form.create<MenuListProps>()(Menu);
+export default connect(({ menu }: ConnectState) => ({
+  menu,
+}))(Form.create()(MenuList));

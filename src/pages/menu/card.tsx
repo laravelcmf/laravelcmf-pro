@@ -201,8 +201,6 @@ class MenuCard extends PureComponent<MenuCardProps> {
   }
 }
 
-connect(({ menu }: ConnectState) => ({
+export default connect(({ menu }: ConnectState) => ({
   menu,
-}));
-
-export default Form.create<MenuListProps>()(MenuCard);
+}))(Form.create<MenuListProps>()(MenuCard));
