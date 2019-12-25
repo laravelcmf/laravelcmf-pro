@@ -22,7 +22,6 @@ import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
 import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
 import logo from '../assets/logo.svg';
-import { MenuParam } from '@/models/global';
 
 const noMatch = (
   <Result
@@ -46,7 +45,6 @@ export interface BasicLayoutProps extends ProLayoutProps {
   };
   settings: Settings;
   dispatch: Dispatch;
-  menuData: MenuParam[];
 }
 
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
@@ -120,7 +118,8 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
 };
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
-  const { dispatch, menuData, children, settings, location = { pathname: '/' } } = props;
+  const { dispatch, children, settings, location = { pathname: '/' } } = props;
+  const { global } = props;
   /**
    * constructor
    */
@@ -187,7 +186,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         );
       }}
       footerRender={footerRender}
-      menuDataRender={() => menuData}
+      menuDataRender={() => global.menus}
       formatMessage={formatMessage}
       rightContentRender={() => <RightContent />}
       {...props}
@@ -202,7 +201,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
 export default connect(({ global, settings }: ConnectState) => ({
   collapsed: global.collapsed,
-  menuData: global.menus,
   global,
   settings,
 }))(BasicLayout);
