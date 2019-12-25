@@ -37,7 +37,7 @@ export default [
               {
                 path: '/system/menu',
                 name: 'menu',
-                icon: 'menu',
+                icon: 'solution',
                 component: './menu',
               },
             ],
