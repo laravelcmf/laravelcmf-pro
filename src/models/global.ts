@@ -92,9 +92,8 @@ const GlobalModel: GlobalModelType = {
   namespace: 'global',
 
   state: {
-    ccollapsed: false,
     title: '权限管理脚手架',
-    copyRight: '2019 LyricTian',
+    copyRight: '2019 LaravelCmf',
     defaultURL: '/dashboard',
     openKeys: [],
     selectedKeys: [],
@@ -206,7 +205,7 @@ const GlobalModel: GlobalModelType = {
       };
     },
     saveUser(state, { payload }) {
-      return { ...state, user: payload };
+      return { ...state, user: payload.data ? payload.data : payload };
     },
     saveMenuPaths(state, { payload }) {
       return { ...state, menuPaths: payload };

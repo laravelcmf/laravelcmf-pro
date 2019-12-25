@@ -3,13 +3,11 @@ import { connect } from 'dva';
 import { Redirect } from 'umi';
 import { stringify } from 'querystring';
 import { ConnectState, ConnectProps } from '@/models/connect';
-import { CurrentUser } from '@/models/user';
 import PageLoading from '@/components/PageLoading';
 import store from '@/utils/store';
 
 interface SecurityLayoutProps extends ConnectProps {
   loading?: boolean;
-  currentUser?: CurrentUser;
 }
 
 interface SecurityLayoutState {
@@ -28,7 +26,7 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     const { dispatch } = this.props;
     if (dispatch) {
       dispatch({
-        type: 'user/fetchCurrent',
+        type: 'global/fetchUser',
       });
     }
   }
@@ -53,7 +51,7 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
   }
 }
 
-export default connect(({ user, loading }: ConnectState) => ({
-  currentUser: user.currentUser,
-  loading: loading.models.user,
+export default connect(({ global, loading }: ConnectState) => ({
+  global,
+  loading: loading.models.global,
 }))(SecurityLayout);

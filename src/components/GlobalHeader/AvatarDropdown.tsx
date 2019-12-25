@@ -6,7 +6,7 @@ import { connect } from 'dva';
 import router from 'umi/router';
 
 import { ConnectProps, ConnectState } from '@/models/connect';
-import { CurrentUser } from '@/models/user';
+import { CurrentUser } from '@/models/global';
 import HeaderDropdown from '../HeaderDropdown';
 import styles from './index.less';
 
@@ -61,7 +61,7 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
     );
 
     return currentUser && currentUser.name ? (
-      <React.Fragment>
+      <>
         <HeaderDropdown overlay={menuHeaderDropdown}>
           <span className={`${styles.action} ${styles.account}`}>
             <Avatar
@@ -71,18 +71,16 @@ class AvatarDropdown extends React.Component<GlobalHeaderRightProps> {
               src={currentUser.portrait}
               alt="avatar"
             />
-            <span className={styles.name}>
-              {currentUser.name} {`${currentUser.role}` ? null : `(${currentUser.role.name})`}
-            </span>
+            <span className={styles.name}>{currentUser.name}</span>
           </span>
         </HeaderDropdown>
-      </React.Fragment>
+      </>
     ) : (
       <Spin size="small" style={{ marginLeft: 8, marginRight: 8 }} />
     );
   }
 }
 
-export default connect(({ user }: ConnectState) => ({
-  currentUser: user.currentUser,
+export default connect(({ global }: ConnectState) => ({
+  currentUser: global.user,
 }))(AvatarDropdown);
