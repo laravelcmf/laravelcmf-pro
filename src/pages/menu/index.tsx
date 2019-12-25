@@ -384,6 +384,8 @@ class Menu extends PureComponent<MenuListProps, MenuListState> {
   }
 }
 
-export default connect(({ menu }: ConnectState) => ({
+connect(({ menu }: ConnectState) => ({
   menu,
-}))(Menu);
+}));
+
+export default Form.create<MenuListProps>()(Menu);
