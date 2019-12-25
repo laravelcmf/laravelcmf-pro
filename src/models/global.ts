@@ -134,12 +134,13 @@ const GlobalModel: GlobalModelType = {
     },
 
     // 获取我的信息
-    *fetchUser(_, { call, put }) {
+    *fetchUser({ success }, { call, put }) {
       const response = yield call(queryCurrent);
       yield put({
         type: 'saveUser',
         payload: response,
       });
+      if (success) success();
     },
 
     // 获取我的树形菜单
@@ -186,11 +187,8 @@ const GlobalModel: GlobalModelType = {
   },
 
   reducers: {
-    changeLayoutCollapsed(state, { payload }): GlobalModelState {
-      return {
-        ...state,
-        collapsed: payload,
-      };
+    changeLayoutCollapsed(state = { collapsed: true }, { payload }) {
+      return { ...state, collapsed: payload };
     },
     changeOpenKeys(state, { payload }) {
       return {

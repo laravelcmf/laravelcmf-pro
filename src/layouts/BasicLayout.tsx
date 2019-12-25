@@ -46,6 +46,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   settings: Settings;
   dispatch: Dispatch;
 }
+
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
   breadcrumbNameMap: {
     [path: string]: MenuDataItem;
@@ -139,6 +140,7 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
       });
     }
   };
+
   // get children authority
   const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
     authority: undefined,
@@ -194,5 +196,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
 
 export default connect(({ global, settings }: ConnectState) => ({
   collapsed: global.collapsed,
+  global,
   settings,
 }))(BasicLayout);

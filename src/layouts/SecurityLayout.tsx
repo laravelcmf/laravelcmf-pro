@@ -27,6 +27,11 @@ class SecurityLayout extends React.Component<SecurityLayoutProps, SecurityLayout
     if (dispatch) {
       dispatch({
         type: 'global/fetchUser',
+        success: () => {
+          dispatch({
+            type: 'global/fetchMenuTree',
+          });
+        },
       });
     }
   }

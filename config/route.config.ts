@@ -29,6 +29,19 @@ export default [
             icon: 'smile',
             component: './Welcome',
           },
+          {
+            path: './system',
+            name: 'system',
+            icon: 'setting',
+            routes: [
+              {
+                path: '/system/menu',
+                name: 'menu',
+                icon: 'menu',
+                component: './menu',
+              },
+            ],
+          },
           // {
           //   path: '/user',
           //   name: 'user',
