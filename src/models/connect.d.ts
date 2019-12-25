@@ -4,8 +4,9 @@ import { RouterTypes } from 'umi';
 import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { StateType } from './login';
+import { MenuModelState } from '@/models/menu';
 
-export { GlobalModelState, SettingModelState };
+export { GlobalModelState, SettingModelState, MenuModelState };
 
 export interface Loading {
   global: boolean;
@@ -24,6 +25,7 @@ export interface ConnectState {
   loading: Loading;
   settings: SettingModelState;
   login: StateType;
+  menu: MenuModelState;
 }
 
 export interface Route extends MenuDataItem {

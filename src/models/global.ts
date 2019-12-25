@@ -47,7 +47,7 @@ export interface MenuParam {
   parent_path?: string;
   sequence?: number;
   icon?: string;
-  router?: string;
+  path?: string;
   hidden?: number;
   created_at?: string;
   updated_at?: string;
@@ -158,8 +158,8 @@ const GlobalModel: GlobalModelType = {
       function fillData(data: any) {
         for (let i = 0; i < data.length; i += 1) {
           menuMap[data[i].id] = data[i];
-          if (data[i].router !== '') {
-            menuPaths[data[i].router] = data[i];
+          if (data[i].path !== '') {
+            menuPaths[data[i].path] = data[i];
           }
           if (data[i].children && data[i].children.length > 0) {
             fillData(data[i].children);
