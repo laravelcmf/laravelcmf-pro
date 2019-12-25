@@ -23,6 +23,7 @@ export interface MenuListState {
   treeSelectedKeys: Array<any>;
 }
 
+@connect(({ menu, loading }: ConnectState) => ({ menu, loading: loading.models.menu }))
 class Menu extends PureComponent<MenuListProps, MenuListState> {
   constructor(props: MenuListProps) {
     super(props);
@@ -246,11 +247,8 @@ class Menu extends PureComponent<MenuListProps, MenuListState> {
   }
 
   render() {
-    const {
-      loading,
-      menu: { data, treeData, expandedKeys },
-    } = this.props;
-
+    const { loading, menu } = this.props;
+    const { data, treeData, expandedKeys } = menu || {};
     const { list, pagination } = data || {};
     const { selectedRowKeys } = this.state;
 
@@ -383,9 +381,5 @@ class Menu extends PureComponent<MenuListProps, MenuListState> {
     );
   }
 }
-
-connect(({ menu }: ConnectState) => ({
-  menu,
-}));
 
 export default Form.create<MenuListProps>()(Menu);

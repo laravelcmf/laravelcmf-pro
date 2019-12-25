@@ -19,6 +19,7 @@ import { FormComponentProps } from 'antd/lib/form';
 import { connect } from 'dva';
 import MenuAction from './action';
 import MenuResource from './resource';
+import { MenuListProps } from '@/pages/menu/index';
 
 export interface MenuCardProps extends FormComponentProps {
   onSubmit?: any;
@@ -200,6 +201,8 @@ class MenuCard extends PureComponent<MenuCardProps> {
   }
 }
 
-export default connect(({ menu }: ConnectState) => ({
+connect(({ menu }: ConnectState) => ({
   menu,
-}))(MenuCard);
+}));
+
+export default Form.create<MenuListProps>()(MenuCard);

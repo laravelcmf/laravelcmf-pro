@@ -7,7 +7,10 @@ import { message } from 'antd';
 export interface MenuModelState {
   search?: any;
   pagination?: any;
-  data?: { list: any; pagination: any };
+  data?: {
+    list: any;
+    pagination: any;
+  };
   submitting?: boolean;
   formType?: string;
   formTitle?: string;
@@ -30,7 +33,7 @@ export interface MenuModelType {
     fetchTree: Effect;
   };
   reducers: {
-    saveData: Reducer<MenuModelState>;
+    saveMenu: Reducer<MenuModelState>;
     saveSearch: Reducer<MenuModelState>;
     savePagination: Reducer<MenuModelState>;
     changeFormVisible: Reducer<MenuModelState>;
@@ -93,7 +96,7 @@ const MenuModel: MenuModelType = {
 
       const response = yield call(menuService.query, params);
       yield put({
-        type: 'saveData',
+        type: 'saveMenu',
         payload: response,
       });
     },
@@ -205,13 +208,13 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.queryTree, params);
       yield put({
         type: 'saveTreeData',
-        payload: response.list || [],
+        payload: response.data || [],
       });
     },
   },
   reducers: {
-    saveData(state, { payload }) {
-      return { ...state, data: payload };
+    saveMenu(state, { data, meta }) {
+      return { ...state, data: { list: data, pagination: meta } };
     },
     saveSearch(state, { payload }) {
       return { ...state, search: payload };
