@@ -49,11 +49,13 @@ export default {
   'menu.editor.flow': '流程编辑器',
   'menu.editor.mind': '脑图编辑器',
   'menu.editor.koni': '拓扑编辑器',
+
   'menu.demo': '演示数据',
   'menu.user': '用户',
-  'menu.system': '系统配置',
+  'menu.system': '系统管理',
   'menu.system.menu': '菜单管理',
   'menu.system.role': '角色管理',
+  'menu.system.user': '用户管理',
 
   'menu.field.name': '菜单名称',
   'menu.field.sequence': '排序值',
@@ -63,7 +65,6 @@ export default {
   'menu.field.parentID': '父级内码',
   'menu.field.parentPath': '父级路径',
   'menu.field.creator': '创建人',
-
   'menu.field.parentID.none': '无上级目录',
 
   'menu.operation.delete.refuse': '禁止删除菜单',
