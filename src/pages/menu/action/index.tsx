@@ -86,6 +86,7 @@ export default class MenuAction extends PureComponent<MenuActionProps, MenuActio
     });
   };
 
+  // 动作管理模板
   handleAddTpl = () => {
     const tplData = [
       {
@@ -118,10 +119,10 @@ export default class MenuAction extends PureComponent<MenuActionProps, MenuActio
         }
       }
       if (!exists) {
+        newData[i].key = newUUID();
         data.push(newData[i]);
       }
     }
-
     this.setState(
       {
         dataSource: data,

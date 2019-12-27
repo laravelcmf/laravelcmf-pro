@@ -16,6 +16,14 @@ export interface MenuActionState {
   addVisible: boolean;
 }
 
+export interface column {
+  title: string;
+  dataIndex: string;
+  editable?: boolean;
+  width?: string;
+  render?: (_: any, record: any) => null | any;
+}
+
 function fillKey(data: any) {
   if (!data) {
     return [];
@@ -30,18 +38,7 @@ function fillKey(data: any) {
 }
 
 export default class MenuAction extends PureComponent<MenuActionProps, MenuActionState> {
-  private columns: (
-    | { dataIndex: string; editable: boolean; width: string; title: string }
-    | { dataIndex: string; editable: boolean; width: string; title: string }
-    | { dataIndex: string; editable: boolean; width: string; title: string }
-    | { dataIndex: string; editable: boolean; title: string }
-    | {
-        dataIndex: string;
-        width: string;
-        title: string;
-        render: (_: any, record: any) => null | any;
-      }
-  )[];
+  private columns: column[];
 
   constructor(props: MenuActionProps) {
     super(props);
