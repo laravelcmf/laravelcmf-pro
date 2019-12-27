@@ -10,11 +10,11 @@ function fillKey(data: any) {
     return [];
   }
   return data.map((item: any) => {
-    const nitem = { ...item };
-    if (!nitem.key) {
-      nitem.key = newUUID();
+    const newItem = { ...item };
+    if (!newItem.key) {
+      newItem.key = newUUID();
     }
-    return nitem;
+    return newItem;
   });
 }
 
@@ -32,7 +32,6 @@ export default class MenuAction extends PureComponent<MenuActionProps, MenuActio
 
   constructor(props: MenuActionProps) {
     super(props);
-
     this.state = {
       dataSource: fillKey(props.value),
     };
@@ -108,7 +107,6 @@ export default class MenuAction extends PureComponent<MenuActionProps, MenuActio
     ];
 
     const newData = tplData.map(v => ({ key: v.code, ...v }));
-
     const { dataSource } = this.state;
     const data = [...dataSource];
     for (let i = 0; i < newData.length; i += 1) {

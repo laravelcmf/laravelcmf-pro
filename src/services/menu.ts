@@ -12,7 +12,7 @@ export async function queryTree(params: any) {
 }
 
 export async function get(params: any) {
-  return request(`/api/${router}/${params.record_id}`);
+  return request(`/api/${router}/${params.id}`);
 }
 
 export async function create(params: any) {

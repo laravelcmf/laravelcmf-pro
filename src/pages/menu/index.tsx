@@ -5,18 +5,20 @@ import React, { PureComponent } from 'react';
 import { ConnectState } from '@/models/connect';
 import { FormComponentProps } from 'antd/lib/form';
 import { connect } from 'dva';
-import MenuCard from './card';
+import MenuCard from './MenuCard';
 import { MenuModelState } from '@/models/menu';
 import PButton from '@/components/PermButton';
 import PageHeaderLayout from '@/layouts/PageHeaderLayout';
 import styles from './index.less';
 
+// 组件 props 接口定义
 export interface MenuListProps extends FormComponentProps {
   dispatch: Dispatch<AnyAction>;
   loading: any;
   menu: MenuModelState;
 }
 
+// 组件 state 接口定义
 export interface MenuListState {
   selectedRowKeys: Array<any>;
   selectedRows: Array<any>;
@@ -33,6 +35,7 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     };
   }
 
+  // 组件初次挂载
   componentDidMount() {
     this.dispatch({
       type: 'menu/fetchTree',
@@ -45,22 +48,24 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     });
   }
 
+  // 编辑
   handleEditClick = () => {
     const { selectedRows } = this.state;
     if (selectedRows.length === 0) {
       return;
     }
 
-    const { record_id: recordID } = selectedRows[0];
+    const { id: Id } = selectedRows[0];
     this.dispatch({
       type: 'menu/loadForm',
       payload: {
         type: 'E',
-        id: recordID,
+        id: Id,
       },
     });
   };
 
+  // 添加
   handleAddClick = () => {
     this.dispatch({
       type: 'menu/loadForm',
@@ -70,13 +75,14 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     });
   };
 
+  // 删除
   handleDelClick = () => {
     const { selectedRows } = this.state;
     if (selectedRows.length === 0) {
       return;
     }
 
-    const { name, record_id: recordID } = selectedRows[0];
+    const { name, id: recordID } = selectedRows[0];
     Modal.confirm({
       title: `确定删除【菜单数据：${name}】？`,
       okText: '确认',
@@ -90,7 +96,7 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     let keys = new Array(0);
     let rows = new Array(0);
     if (selected) {
-      keys = [record.record_id];
+      keys = [record.id];
       rows = [record];
     }
     this.setState({
@@ -99,13 +105,11 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     });
   };
 
-  onTableChange = (pagination: any) => {
+  // 选中项发生变化时的回调
+  onTableChange = ({ current, pageSize, total }: any) => {
     this.dispatch({
       type: 'menu/fetch',
-      pagination: {
-        current: pagination.current,
-        pageSize: pagination.pageSize,
-      },
+      pagination: { current, pageSize, total },
     });
     this.clearSelectRows();
   };
@@ -179,10 +183,10 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     return parentID;
   };
 
-  handleDelOKClick(id: any) {
+  handleDelOKClick(Id: any) {
     this.dispatch({
       type: 'menu/del',
-      payload: { record_id: id },
+      payload: { id: Id },
     });
     this.clearSelectRows();
   }
@@ -191,7 +195,7 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     return <MenuCard onCancel={this.handleFormCancel} onSubmit={this.handleFormSubmit} />;
   }
 
-  renderTreeNodes = (data: any) =>
+  renderTreeNodes = (data: any = []) =>
     data.map((item: any) => {
       if (item.children) {
         return (
@@ -218,10 +222,10 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
           <Col span={8}>
             <Form.Item label="隐藏状态">
               {getFieldDecorator('hidden', {
-                initialValue: '-1',
+                initialValue: '',
               })(
                 <Radio.Group>
-                  <Radio value="-1">全部</Radio>
+                  <Radio value="">全部</Radio>
                   <Radio value="0">显示</Radio>
                   <Radio value="1">隐藏</Radio>
                 </Radio.Group>,
@@ -246,14 +250,13 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
   }
 
   render() {
+    // 解构对象 props
     const {
       loading,
       menu: { data, treeData, expandedKeys },
     } = this.props;
-
     const { list, pagination } = data || {};
     const { selectedRowKeys } = this.state;
-
     const columns = [
       {
         title: '菜单名称',
@@ -284,7 +287,17 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
       },
       {
         title: '访问路由',
-        dataIndex: 'router',
+        dataIndex: 'path',
+        width: 150,
+      },
+      {
+        title: '添加时间',
+        dataIndex: 'created_at',
+        width: 200,
+      },
+      {
+        title: '更新时间',
+        dataIndex: 'updated_at',
       },
     ];
 
@@ -304,6 +317,7 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
             style={{ background: '#fff', borderRight: '1px solid lightGray' }}
           >
             <Tree
+              style={{ margin: '20px' }}
               expandedKeys={expandedKeys}
               onSelect={keys => {
                 this.setState({
@@ -315,11 +329,11 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
                 } = this.props;
 
                 const item = {
-                  parentID: '',
+                  parent_id: '',
                 };
 
                 if (keys.length > 0) {
-                  [item.parentID] = keys;
+                  [item.parent_id] = keys;
                 }
 
                 this.dispatch({
@@ -367,7 +381,7 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
                     onSelect: this.handleTableSelectRow,
                   }}
                   loading={loading}
-                  rowKey={(record: any) => record.record_id}
+                  rowKey={(record: any) => record.id}
                   dataSource={list}
                   columns={columns}
                   pagination={paginationProps}

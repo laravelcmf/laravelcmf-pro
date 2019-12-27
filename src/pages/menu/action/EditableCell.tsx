@@ -42,7 +42,6 @@ export class EditableCell extends PureComponent<EditableCellProps> {
 
   render() {
     const { editable, dataIndex, title, record, index, handleSave, ...restProps } = this.props;
-
     return (
       <td {...restProps}>
         {editable ? (

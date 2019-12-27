@@ -12,7 +12,7 @@ export default class store {
   static getAccessToken() {
     const token = getStore(accessTokenKey);
     if (!token || token === '') {
-      return null;
+      return false;
     }
     return token;
   }

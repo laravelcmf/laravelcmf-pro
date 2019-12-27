@@ -24,7 +24,7 @@ import { MenuListProps } from '@/pages/menu/index';
 export interface MenuCardProps extends FormComponentProps {
   onSubmit?: any;
   dispatch?: Dispatch<AnyAction>;
-  onCancel?: any;
+  onCancel: any;
   menu?: any;
 }
 
@@ -47,7 +47,7 @@ class MenuCard extends PureComponent<MenuCardProps> {
     }
     const newData = [];
     for (let i = 0; i < data.length; i += 1) {
-      const item = { ...data[i], title: data[i].name, value: data[i].record_id };
+      const item = { ...data[i], title: data[i].name, value: data[i].id };
       if (item.children && item.children.length > 0) {
         item.children = this.toTreeSelect(item.children);
       }
@@ -62,7 +62,6 @@ class MenuCard extends PureComponent<MenuCardProps> {
       form: { getFieldDecorator },
       onCancel,
     } = this.props;
-
     const formItemLayout = {
       labelCol: {
         span: 6,
@@ -143,8 +142,8 @@ class MenuCard extends PureComponent<MenuCardProps> {
               </Col>
               <Col span={12}>
                 <Form.Item {...formItemLayout} label="访问路由">
-                  {getFieldDecorator('router', {
-                    initialValue: formData.router,
+                  {getFieldDecorator('path', {
+                    initialValue: formData.path,
                   })(<Input placeholder="请输入" />)}
                 </Form.Item>
               </Col>

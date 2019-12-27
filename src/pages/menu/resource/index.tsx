@@ -21,11 +21,11 @@ function fillKey(data: any) {
     return [];
   }
   return data.map((item: any) => {
-    const nitem = { ...item };
-    if (!nitem.key) {
-      nitem.key = newUUID();
+    const newItem = { ...item };
+    if (!newItem.key) {
+      newItem.key = newUUID();
     }
-    return nitem;
+    return newItem;
   });
 }
 

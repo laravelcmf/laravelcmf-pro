@@ -14,27 +14,15 @@ import React, { useEffect } from 'react';
 import Link from 'umi/link';
 import { Dispatch } from 'redux';
 import { connect } from 'dva';
-import { Icon, Result, Button } from 'antd';
+import { Icon } from 'antd';
 import { formatMessage } from 'umi-plugin-react/locale';
 
-import Authorized from '@/utils/Authorized';
 import RightContent from '@/components/GlobalHeader/RightContent';
 import { ConnectState } from '@/models/connect';
-import { isAntDesignPro, getAuthorityFromRouter } from '@/utils/utils';
+import { GlobalContext } from '@/utils/context';
+import { isAntDesignPro } from '@/utils/utils';
 import logo from '../assets/logo.svg';
-
-const noMatch = (
-  <Result
-    status="403"
-    title="403"
-    subTitle="Sorry, you are not authorized to access this page."
-    extra={
-      <Button type="primary">
-        <Link to="/user/login">Go Login</Link>
-      </Button>
-    }
-  />
-);
+import { GlobalModelState } from '@/models/global';
 
 export interface BasicLayoutProps extends ProLayoutProps {
   breadcrumbNameMap: {
@@ -45,6 +33,7 @@ export interface BasicLayoutProps extends ProLayoutProps {
   };
   settings: Settings;
   dispatch: Dispatch;
+  global: GlobalModelState;
 }
 
 export type BasicLayoutContext = { [K in 'location']: BasicLayoutProps[K] } & {
@@ -118,8 +107,8 @@ const footerRender: BasicLayoutProps['footerRender'] = () => {
 };
 
 const BasicLayout: React.FC<BasicLayoutProps> = props => {
-  const { dispatch, children, settings, location = { pathname: '/' } } = props;
-  const { global } = props;
+  const { global, dispatch, children, settings } = props;
+
   /**
    * constructor
    */
@@ -137,19 +126,16 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   /**
    * init variables
    */
-  const handleMenuCollapse = (payload: boolean): void => {
-    if (dispatch) {
-      dispatch({
-        type: 'global/changeLayoutCollapsed',
-        payload,
-      });
-    }
-  };
+  // const handleMenuCollapse = (payload: boolean) => {
+  //   if (dispatch) {
+  //     dispatch({
+  //       type: 'global/changeLayoutCollapsed',
+  //       payload,
+  //     });
+  //   }
+  // };
 
   // get children authority
-  const authorized = getAuthorityFromRouter(props.route.routes, location.pathname || '/') || {
-    authority: undefined,
-  };
 
   return (
     <ProLayout
@@ -160,12 +146,12 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
           {titleDom}
         </Link>
       )}
-      onCollapse={handleMenuCollapse}
+      // onCollapse={handleMenuCollapse}
       menuItemRender={(menuItemProps, defaultDom) => {
         if (menuItemProps.isUrl || menuItemProps.children) {
           return defaultDom;
         }
-        return <Link to={menuItemProps.path}>{defaultDom}</Link>;
+        return <Link to={menuItemProps.path!}>{defaultDom}</Link>;
       }}
       breadcrumbRender={(routers = []) => [
         {
@@ -186,15 +172,15 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
         );
       }}
       footerRender={footerRender}
-      menuDataRender={() => global.menus}
+      menuDataRender={() => global.menus!}
       formatMessage={formatMessage}
       rightContentRender={() => <RightContent />}
       {...props}
       {...settings}
     >
-      <Authorized authority={authorized!.authority} noMatch={noMatch}>
+      <GlobalContext.Provider value={{ menuPaths: global.menuPaths }}>
         {children}
-      </Authorized>
+      </GlobalContext.Provider>
     </ProLayout>
   );
 };

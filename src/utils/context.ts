@@ -1,28 +1,32 @@
 import React from 'react';
 
 export interface MenuAction {
+  id?: number;
   code?: string;
   name?: string;
+  menu_id?: number;
 }
 
 export interface MenuResource {
+  id?: number;
   code?: string;
   name?: string;
   method?: string;
   path?: string;
+  menu_id?: number;
 }
 
 export interface MenuParam {
-  record_id?: string;
+  id?: number;
   name?: string;
+  parent_id?: number;
+  parent_path?: string;
   sequence?: number;
   icon?: string;
-  router?: string;
+  path?: string;
   hidden?: number;
-  parent_id?: string;
-  parent_path?: string;
-  creator?: string;
   created_at?: string;
+  updated_at?: string;
   actions?: MenuAction[];
   resources?: MenuResource[];
 }

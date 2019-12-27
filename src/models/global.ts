@@ -3,6 +3,14 @@ import { Subscription, Effect } from 'dva';
 
 import { queryCurrent, queryMenuTree } from '@/services/user';
 
+// 分页
+export interface Pagination {
+  current?: number; // 当前页数
+  pageSize?: number; // 每页条数
+  pageSizeOptions?: string[]; // 指定每页可以显示多少条
+  total?: number; // 数据总数
+}
+
 export interface CurrentUser {
   id?: number;
   name?: string;

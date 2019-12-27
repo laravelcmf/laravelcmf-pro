@@ -3,13 +3,14 @@ import * as menuService from '@/services/menu';
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 import { message } from 'antd';
+import { Pagination } from '@/models/global';
 
 export interface MenuModelState {
   search?: any;
   pagination?: any;
   data?: {
     list: any;
-    pagination: any;
+    pagination: Pagination;
   };
   submitting?: boolean;
   formType?: string;
@@ -54,7 +55,12 @@ const MenuModel: MenuModelType = {
     pagination: {},
     data: {
       list: [],
-      pagination: {},
+      pagination: {
+        current: 1,
+        pageSize: 10,
+        pageSizeOptions: ['15', '30', '45', '60'],
+        total: 0,
+      },
     },
     submitting: false,
     formType: '',
@@ -68,6 +74,7 @@ const MenuModel: MenuModelType = {
   effects: {
     *fetch({ search, pagination }, { call, put, select }) {
       let params = {};
+      // 搜索条件
       if (search) {
         params = { ...params, ...search };
         yield put({
@@ -81,8 +88,11 @@ const MenuModel: MenuModelType = {
         }
       }
 
+      // 分页
       if (pagination) {
-        params = { ...params, ...pagination };
+        const { current, pageSize } = pagination;
+        const page = { page: current, per_page: pageSize };
+        params = { ...params, ...page };
         yield put({
           type: 'savePagination',
           payload: pagination,
@@ -97,7 +107,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.query, params);
       yield put({
         type: 'saveMenu',
-        payload: response,
+        payload: response.data || {},
       });
     },
     *loadForm({ payload }, { put, select }) {
@@ -138,7 +148,7 @@ const MenuModel: MenuModelType = {
           }),
           put({
             type: 'fetchForm',
-            payload: { record_id: payload.id },
+            payload: { id: payload.id },
           }),
         ];
       } else {
@@ -153,7 +163,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.get, payload);
       yield put({
         type: 'saveFormData',
-        payload: response,
+        payload: response.data || {},
       });
     },
     *submit({ payload }, { call, put, select }) {
@@ -167,12 +177,12 @@ const MenuModel: MenuModelType = {
       let success = false;
       let response;
       if (formType === 'E') {
-        params.record_id = yield select((state: any) => state.menu.formID);
+        params.id = yield select((state: any) => state.menu.formID);
         response = yield call(menuService.update, params);
       } else {
         response = yield call(menuService.create, params);
       }
-      if (response.record_id && response.record_id !== '') {
+      if (response.id && response.id !== '') {
         success = true;
       }
 
@@ -213,14 +223,35 @@ const MenuModel: MenuModelType = {
     },
   },
   reducers: {
-    saveMenu(state, { data, meta }) {
-      return { ...state, data: { list: data, pagination: meta } };
+    saveMenu(
+      state,
+      {
+        payload: {
+          data,
+          meta: { current_page: current = 1, per_page: pageSize = 15, total: total = 0 },
+        },
+      },
+    ) {
+      return {
+        ...state,
+        data: {
+          list: data,
+          pagination: {
+            current: parseInt(current, 10),
+            pageSize: parseInt(pageSize, 10),
+            total: parseInt(total, 10),
+          },
+        },
+      };
     },
     saveSearch(state, { payload }) {
       return { ...state, search: payload };
     },
     savePagination(state, { payload }) {
-      return { ...state, pagination: payload };
+      return {
+        ...state,
+        ...payload,
+      };
     },
     changeFormVisible(state, { payload }) {
       return { ...state, formVisible: payload };

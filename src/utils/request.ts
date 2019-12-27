@@ -27,7 +27,7 @@ const codeMessage = {
 /**
  * 异常处理程序
  */
-const errorHandler = (error: { response: Response }): Response => {
+const errorHandler = (error: { response: Response; data: any }): any | Response => {
   const { response, data } = error;
   if (response && data && data.message) {
     const { status, url } = response;
