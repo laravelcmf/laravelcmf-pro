@@ -56,6 +56,7 @@ export default {
   'menu.system.menu': '菜单管理',
   'menu.system.role': '角色管理',
   'menu.system.user': '用户管理',
+  'menu.system.log': '日志管理',
 
   'menu.field.name': '菜单名称',
   'menu.field.sequence': '排序值',

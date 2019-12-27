@@ -182,6 +182,7 @@ const MenuModel: MenuModelType = {
       } else {
         response = yield call(menuService.create, params);
       }
+      response = response.data || {};
       if (response.id && response.id !== '') {
         success = true;
       }
