@@ -27,7 +27,7 @@ export async function get({ id }: any) {
 export async function create(params: any) {
   return request(`/api/${router}`, {
     method: 'POST',
-    body: params,
+    data: params,
   });
 }
 
@@ -35,7 +35,7 @@ export async function create(params: any) {
 export async function update(params: any) {
   return request(`/api/${router}/${params.id}`, {
     method: 'PUT',
-    body: params,
+    data: params,
   });
 }
 
