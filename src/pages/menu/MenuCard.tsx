@@ -70,7 +70,6 @@ class MenuCard extends PureComponent<MenuCardProps> {
         span: 18,
       },
     };
-
     return (
       <Modal
         title={formTitle}
