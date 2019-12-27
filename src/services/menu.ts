@@ -1,20 +1,29 @@
 import request from '@/utils/request';
-import { stringify } from 'qs';
 
 const router = 'menus';
 
+// 分页
 export async function query(params: any) {
-  return request(`/api/${router}?${stringify(params)}`);
+  return request(`/api/${router}`, {
+    method: 'GET',
+    params,
+  });
 }
 
+// 获取 tree 菜单
 export async function queryTree(params: any) {
-  return request(`/api/${router}/tree?${stringify(params)}`);
+  return request(`/api/${router}/tree`, {
+    method: 'GET',
+    params,
+  });
 }
 
-export async function get(params: any) {
-  return request(`/api/${router}/${params.id}`);
+// 查看菜单
+export async function get({ id }: any) {
+  return request(`/api/${router}/${id}`);
 }
 
+// 新增菜单
 export async function create(params: any) {
   return request(`/api/${router}`, {
     method: 'POST',
@@ -22,15 +31,17 @@ export async function create(params: any) {
   });
 }
 
+// 更新菜单
 export async function update(params: any) {
-  return request(`/api/${router}/${params.record_id}`, {
+  return request(`/api/${router}/${params.id}`, {
     method: 'PUT',
     body: params,
   });
 }
 
+// 删除菜单
 export async function del(params: any) {
-  return request(`/api/${router}/${params.record_id}`, {
+  return request(`/api/${router}/${params.id}`, {
     method: 'DELETE',
   });
 }
