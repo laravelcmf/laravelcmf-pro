@@ -1,80 +1,69 @@
-import * as menuService from '@/services/menu';
-
 import { Effect } from 'dva';
 import { Reducer } from 'redux';
 import { message } from 'antd';
 import { Pagination } from '@/models/global';
+import * as roleService from '@/services/role';
 
-export interface MenuModelState {
+export interface RoleModeState {
   search?: any;
-  pagination?: any;
   data?: {
-    list: any;
-    pagination: Pagination;
+    list?: any;
+    pagination?: Pagination;
   };
   submitting?: boolean;
-  formType?: string;
   formTitle?: string;
+  formType?: string;
   formID?: string;
   formVisible?: boolean;
   formData?: any;
-  treeData?: any;
-  expandedKeys?: any;
+  selectData?: any;
 }
 
-export interface MenuModelType {
-  namespace: 'menu';
-  state: MenuModelState;
+export interface RoleModeType {
+  namespace: string;
+  state: RoleModeState;
   effects: {
     fetch: Effect;
     loadForm: Effect;
     fetchForm: Effect;
     submit: Effect;
     del: Effect;
-    fetchTree: Effect;
+    fetchSelect: Effect;
   };
   reducers: {
-    saveMenu: Reducer<MenuModelState>;
-    saveSearch: Reducer<MenuModelState>;
-    savePagination: Reducer<MenuModelState>;
-    changeFormVisible: Reducer<MenuModelState>;
-    saveFormType: Reducer<MenuModelState>;
-    saveFormTitle: Reducer<MenuModelState>;
-    saveFormID: Reducer<MenuModelState>;
-    saveFormData: Reducer<MenuModelState>;
-    changeSubmitting: Reducer<MenuModelState>;
-    saveTreeData: Reducer<MenuModelState>;
-    saveExpandedKeys: Reducer<MenuModelState>;
+    saveData: Reducer<RoleModeState>;
+    saveSearch: Reducer<RoleModeState>;
+    savePagination: Reducer<RoleModeState>;
+    changeFormVisible: Reducer<RoleModeState>;
+    saveFormTitle: Reducer<RoleModeState>;
+    saveFormType: Reducer<RoleModeState>;
+    saveFormID: Reducer<RoleModeState>;
+    saveFormData: Reducer<RoleModeState>;
+    changeSubmitting: Reducer<RoleModeState>;
+    saveSelectData: Reducer<RoleModeState>;
   };
 }
 
-const MenuModel: MenuModelType = {
-  namespace: 'menu',
+const Role: RoleModeType = {
+  namespace: 'role',
   state: {
     search: {},
-    pagination: {},
     data: {
       list: [],
-      pagination: {
-        current: 1,
-        pageSize: 10,
-        pageSizeOptions: ['15', '30', '45', '60'],
-        total: 0,
-      },
+      pagination: {},
     },
     submitting: false,
-    formType: '',
     formTitle: '',
     formID: '',
     formVisible: false,
     formData: {},
-    treeData: [],
-    expandedKeys: [],
+    selectData: [],
   },
+
   effects: {
     *fetch({ search, pagination }, { call, put, select }) {
       let params = {};
-      // 搜索条件
+
       if (search) {
         params = { ...params, ...search };
         yield put({
@@ -82,35 +71,32 @@ const MenuModel: MenuModelType = {
           payload: search,
         });
       } else {
-        const s = yield select((state: any) => state.menu.search);
+        const s = yield select((state: any) => state.role.search);
         if (s) {
           params = { ...params, ...s };
         }
       }
 
-      // 分页
       if (pagination) {
-        const { current, pageSize } = pagination;
-        const page = { page: current, per_page: pageSize };
-        params = { ...params, ...page };
+        params = { ...params, ...pagination };
         yield put({
           type: 'savePagination',
           payload: pagination,
         });
       } else {
-        const p = yield select((state: any) => state.menu.pagination);
+        const p = yield select((state: any) => state.role.pagination);
         if (p) {
           params = { ...params, ...p };
         }
       }
 
-      const response = yield call(menuService.query, params);
+      const response = yield call(roleService.query, params);
       yield put({
-        type: 'saveMenu',
+        type: 'saveData',
         payload: response.data || {},
       });
     },
-    *loadForm({ payload }, { put, select }) {
+    *loadForm({ payload }, { put }) {
       yield put({
         type: 'changeFormVisible',
         payload: true,
@@ -123,7 +109,7 @@ const MenuModel: MenuModelType = {
         }),
         put({
           type: 'saveFormTitle',
-          payload: '新建菜单',
+          payload: '新建角色',
         }),
         put({
           type: 'saveFormID',
@@ -133,14 +119,13 @@ const MenuModel: MenuModelType = {
           type: 'saveFormData',
           payload: {},
         }),
-        put({ type: 'fetchTree' }),
       ];
 
       if (payload.type === 'E') {
         yield [
           put({
             type: 'saveFormTitle',
-            payload: '编辑菜单',
+            payload: '编辑角色',
           }),
           put({
             type: 'saveFormID',
@@ -148,23 +133,19 @@ const MenuModel: MenuModelType = {
           }),
           put({
             type: 'fetchForm',
-            payload: { id: payload.id },
+            payload: { record_id: payload.id },
           }),
         ];
-      } else {
-        const search = yield select((state: any) => state.menu.search);
-        yield put({
-          type: 'saveFormData',
-          payload: { parent_id: search.parentID ? search.parentID : '' },
-        });
       }
     },
     *fetchForm({ payload }, { call, put }) {
-      const response = yield call(menuService.get, payload);
-      yield put({
-        type: 'saveFormData',
-        payload: response.data || {},
-      });
+      const response = yield call(roleService.get, payload);
+      yield [
+        put({
+          type: 'saveFormData',
+          payload: response,
+        }),
+      ];
     },
     *submit({ payload }, { call, put, select }) {
       yield put({
@@ -173,18 +154,14 @@ const MenuModel: MenuModelType = {
       });
 
       const params = { ...payload };
-      const formType = yield select((state: any) => state.menu.formType);
-      let success = false;
+      const formType = yield select((state: any) => state.role.formType);
+
       let response;
       if (formType === 'E') {
-        params.id = yield select((state: any) => state.menu.formID);
-        response = yield call(menuService.update, params);
+        params.record_id = yield select((state: any) => state.role.formID);
+        response = yield call(roleService.update, params);
       } else {
-        response = yield call(menuService.create, params);
-      }
-      response = response.data || {};
-      if (response.id && response.id !== '') {
-        success = true;
+        response = yield call(roleService.create, params);
       }
 
       yield put({
@@ -192,39 +169,35 @@ const MenuModel: MenuModelType = {
         payload: false,
       });
 
-      if (success) {
+      if (response.record_id && response.record_id !== '') {
         message.success('保存成功');
         yield put({
           type: 'changeFormVisible',
           payload: false,
         });
-
-        yield put({ type: 'fetchTree' });
-        yield put({ type: 'fetch' });
+        yield put({
+          type: 'fetch',
+        });
       }
     },
     *del({ payload }, { call, put }) {
-      const response = yield call(menuService.del, payload);
+      const response = yield call(roleService.del, payload);
       if (response.status === 'OK') {
         message.success('删除成功');
-        yield put({ type: 'fetchTree' });
         yield put({ type: 'fetch' });
       }
     },
-    *fetchTree({ payload }, { call, put }) {
-      let params = {};
-      if (payload) {
-        params = { ...params, ...payload };
-      }
-      const response = yield call(menuService.queryTree, params);
+    *fetchSelect(_, { call, put }) {
+      const response = yield call(roleService.querySelect);
       yield put({
-        type: 'saveTreeData',
-        payload: response.data || [],
+        type: 'saveSelectData',
+        payload: response.list || [],
       });
     },
   },
+
   reducers: {
-    saveMenu(
+    saveData(
       state,
       {
         payload: {
@@ -249,19 +222,16 @@ const MenuModel: MenuModelType = {
       return { ...state, search: payload };
     },
     savePagination(state, { payload }) {
-      return {
-        ...state,
-        ...payload,
-      };
+      return { ...state, pagination: payload };
     },
     changeFormVisible(state, { payload }) {
       return { ...state, formVisible: payload };
     },
-    saveFormType(state, { payload }) {
-      return { ...state, formType: payload };
-    },
     saveFormTitle(state, { payload }) {
       return { ...state, formTitle: payload };
+    },
+    saveFormType(state, { payload }) {
+      return { ...state, formType: payload };
     },
     saveFormID(state, { payload }) {
       return { ...state, formID: payload };
@@ -272,13 +242,10 @@ const MenuModel: MenuModelType = {
     changeSubmitting(state, { payload }) {
       return { ...state, submitting: payload };
     },
-    saveTreeData(state, { payload }) {
-      return { ...state, treeData: payload };
-    },
-    saveExpandedKeys(state, { payload }) {
-      return { ...state, expandedKeys: payload };
+    saveSelectData(state, { payload }) {
+      return { ...state, selectData: payload };
     },
   },
 };
 
-export default MenuModel;
+export default Role;

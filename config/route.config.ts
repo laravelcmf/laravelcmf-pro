@@ -40,6 +40,12 @@ export default [
                 icon: 'solution',
                 component: './menu',
               },
+              {
+                path: '/system/role',
+                name: 'menu',
+                icon: 'audit',
+                component: './role',
+              },
             ],
           },
         ],
