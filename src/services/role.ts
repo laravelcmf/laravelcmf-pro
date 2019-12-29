@@ -10,7 +10,7 @@ export async function query(params: any) {
 
 // 查看
 export async function get(id: number) {
-  return request(`'/api/roles/${id}`, {
+  return request(`/api/roles/${id}`, {
     method: 'GET',
   });
 }

@@ -14,9 +14,7 @@ export interface RoleCardProps extends FormComponentProps {
   role?: any;
 }
 
-export interface RoleCardState {}
-
-class RoleCard extends PureComponent<RoleCardProps, RoleCardState> {
+class RoleCard extends PureComponent<RoleCardProps> {
   onOKClick = () => {
     const { form, onSubmit } = this.props;
 
@@ -27,7 +25,7 @@ class RoleCard extends PureComponent<RoleCardProps, RoleCardState> {
       const formData = { ...values };
       formData.sequence = parseInt(formData.sequence, 10);
       if (!formData.menus || formData.menus.length === 0) {
-        message.warning('请选择菜单权限！');
+        message.warning('请选择菜单权限');
         return;
       }
       onSubmit(formData);
@@ -47,7 +45,6 @@ class RoleCard extends PureComponent<RoleCardProps, RoleCardState> {
       form: { getFieldDecorator },
       onCancel,
     } = this.props;
-
     const formItemLayout = {
       labelCol: {
         span: 4,

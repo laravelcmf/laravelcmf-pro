@@ -133,17 +133,17 @@ const Role: RoleModeType = {
           }),
           put({
             type: 'fetchForm',
-            payload: { record_id: payload.id },
+            payload: { id: payload.id },
           }),
         ];
       }
     },
-    *fetchForm({ payload }, { call, put }) {
-      const response = yield call(roleService.get, payload);
+    *fetchForm({ payload: { id } }, { call, put }) {
+      const response = yield call(roleService.get, id);
       yield [
         put({
           type: 'saveFormData',
-          payload: response,
+          payload: response.data || {},
         }),
       ];
     },
@@ -158,7 +158,7 @@ const Role: RoleModeType = {
 
       let response;
       if (formType === 'E') {
-        params.record_id = yield select((state: any) => state.role.formID);
+        params.id = yield select((state: any) => state.role.formID);
         response = yield call(roleService.update, params);
       } else {
         response = yield call(roleService.create, params);
@@ -169,7 +169,7 @@ const Role: RoleModeType = {
         payload: false,
       });
 
-      if (response.record_id && response.record_id !== '') {
+      if (response.id && response.id !== '') {
         message.success('保存成功');
         yield put({
           type: 'changeFormVisible',
@@ -222,7 +222,10 @@ const Role: RoleModeType = {
       return { ...state, search: payload };
     },
     savePagination(state, { payload }) {
-      return { ...state, pagination: payload };
+      return {
+        ...state,
+        ...payload,
+      };
     },
     changeFormVisible(state, { payload }) {
       return { ...state, formVisible: payload };

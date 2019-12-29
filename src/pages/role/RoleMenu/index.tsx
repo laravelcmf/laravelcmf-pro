@@ -54,8 +54,8 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
   }
 
   componentDidMount(): void {
-    menuService.queryTree({ includeActions: '1', includeResources: '1' }).then((data: any) => {
-      const list = data.list || [];
+    menuService.queryTree({ include: 'actions,resources' }).then((response: any) => {
+      const list = response.data || [];
       this.setState({ menuData: this.fillData(list) });
     });
   }
@@ -86,11 +86,11 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
   handleSave = (record: any, dataIndex: any, values: any) => {
     const { dataSource } = this.state;
     const data = [...dataSource];
-    const index = data.findIndex(item => item.menu_id === record.record_id);
+    const index = data.findIndex(item => item.menu_id === record.id);
     let item = data[index];
     if (!item) {
       item = {
-        menu_id: record.record_id,
+        menu_id: record.id,
         dataIndex: values,
       };
     } else {
@@ -128,7 +128,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
     for (let i = 0; i < addData.length; i += 1) {
       let exists = false;
       for (let j = 0; j < list.length; j += 1) {
-        if (list[j].menu_id === addData[i].record_id) {
+        if (list[j].menu_id === addData[i].id) {
           exists = true;
           break;
         }
@@ -136,7 +136,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
 
       if (!exists) {
         const item = {
-          menu_id: addData[i].record_id,
+          menu_id: addData[i].id,
           actions: addData[i].actions ? addData[i].actions.map((v: any) => v.code) : [],
           resources: addData[i].resources ? addData[i].resources.map((v: any) => v.code) : [],
         };
@@ -152,7 +152,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
     for (let i = 0; i < data.length; i += 1) {
       let exists = false;
       for (let j = 0; j < selectedRows.length; j += 1) {
-        if (data[i].menu_id === selectedRows[j].record_id) {
+        if (data[i].menu_id === selectedRows[j].id) {
           exists = true;
           break;
         }
@@ -187,7 +187,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
     let list: never[] = [];
     if (selected) {
       list = selectRows.map((vv: any) => ({
-        menu_id: vv.record_id,
+        menu_id: vv.id,
         actions: vv.actions ? vv.actions.map((v: any) => v.code) : [],
         resources: vv.resources ? vv.resources.map((v: any) => v.code) : [],
       }));
@@ -197,17 +197,10 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
     });
   };
 
-  render():
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | string
-    | number
-    | {}
-    | React.ReactNodeArray
-    | React.ReactPortal
-    | boolean
-    | null
-    | undefined {
+  render() {
     const { dataSource, menuData } = this.state;
+    console.log('dataSource:', dataSource);
+    console.log('menuData:', menuData);
     const components = {
       body: {
         cell: EditableCell,
@@ -238,7 +231,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
             onSelect: this.handleSelectedRow,
             onSelectAll: this.handleSelectAll,
           }}
-          rowKey={record => record.record_id}
+          rowKey={record => record.id}
           components={components}
           dataSource={menuData}
           columns={columns}
