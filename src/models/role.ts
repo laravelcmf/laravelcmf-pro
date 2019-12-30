@@ -169,6 +169,8 @@ const Role: RoleModeType = {
         payload: false,
       });
 
+      response = response.data || {};
+      console.log('response:', response);
       if (response.id && response.id !== '') {
         message.success('保存成功');
         yield put({
@@ -180,9 +182,9 @@ const Role: RoleModeType = {
         });
       }
     },
-    *del({ payload }, { call, put }) {
-      const response = yield call(roleService.del, payload);
-      if (response.status === 'OK') {
+    *del({ payload: { id } }, { call, put }) {
+      const { response } = yield call(roleService.del, id);
+      if (response.status === 204) {
         message.success('删除成功');
         yield put({ type: 'fetch' });
       }
