@@ -16,7 +16,6 @@ export interface RoleModeState {
   formID?: string;
   formVisible?: boolean;
   formData?: any;
-  selectData?: any;
 }
 
 export interface RoleModeType {
@@ -28,7 +27,6 @@ export interface RoleModeType {
     fetchForm: Effect;
     submit: Effect;
     del: Effect;
-    fetchSelect: Effect;
   };
   reducers: {
     saveData: Reducer<RoleModeState>;
@@ -40,7 +38,6 @@ export interface RoleModeType {
     saveFormID: Reducer<RoleModeState>;
     saveFormData: Reducer<RoleModeState>;
     changeSubmitting: Reducer<RoleModeState>;
-    saveSelectData: Reducer<RoleModeState>;
   };
 }
 
@@ -57,7 +54,6 @@ const Role: RoleModeType = {
     formID: '',
     formVisible: false,
     formData: {},
-    selectData: [],
   },
 
   effects: {
@@ -170,7 +166,6 @@ const Role: RoleModeType = {
       });
 
       response = response.data || {};
-      console.log('response:', response);
       if (response.id && response.id !== '') {
         message.success('保存成功');
         yield put({
@@ -188,13 +183,6 @@ const Role: RoleModeType = {
         message.success('删除成功');
         yield put({ type: 'fetch' });
       }
-    },
-    *fetchSelect(_, { call, put }) {
-      const response = yield call(roleService.querySelect);
-      yield put({
-        type: 'saveSelectData',
-        payload: response.list || [],
-      });
     },
   },
 
@@ -246,9 +234,6 @@ const Role: RoleModeType = {
     },
     changeSubmitting(state, { payload }) {
       return { ...state, submitting: payload };
-    },
-    saveSelectData(state, { payload }) {
-      return { ...state, selectData: payload };
     },
   },
 };
