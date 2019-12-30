@@ -13,7 +13,7 @@ export default class EditableCell extends PureComponent<EditableCellProps> {
   findItem = () => {
     const { data, record } = this.props;
     for (let i = 0; i < data.length; i += 1) {
-      if (data[i].menu_id === record.record_id) {
+      if (data[i].menu_id === record.id) {
         return data[i];
       }
     }
@@ -71,16 +71,7 @@ export default class EditableCell extends PureComponent<EditableCellProps> {
     );
   };
 
-  render():
-    | React.ReactElement<any, string | React.JSXElementConstructor<any>>
-    | string
-    | number
-    | {}
-    | React.ReactNodeArray
-    | React.ReactPortal
-    | boolean
-    | null
-    | undefined {
+  render() {
     const { dataIndex, record, menuData, handleSave, ...restProps } = this.props;
 
     return (

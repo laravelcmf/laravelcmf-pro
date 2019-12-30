@@ -77,6 +77,8 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
       const item = { ...newData[i], hasChild: children && children.length > 0 };
       if (item.hasChild) {
         item.children = this.fillData(children);
+      } else {
+        delete item.children;
       }
       newData[i] = item;
     }
@@ -115,7 +117,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
     let child = [];
     for (let i = 0; i < data.length; i += 1) {
       child.push(data[i]);
-      if (data[i].children) {
+      if (data[i].children && data[i].children.length > 0) {
         child = [...child, ...this.expandAllChild(data[i].children)];
       }
     }
@@ -166,7 +168,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
 
   handleSelectedRow = (record: any, selected: any) => {
     let selectedRows = [record];
-    if (record.children) {
+    if (record.children && record.children.length > 0) {
       selectedRows = [...selectedRows, ...this.expandAllChild(record.children)];
     }
 
@@ -199,8 +201,6 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
 
   render() {
     const { dataSource, menuData } = this.state;
-    console.log('dataSource:', dataSource);
-    console.log('menuData:', menuData);
     const components = {
       body: {
         cell: EditableCell,
