@@ -97,13 +97,10 @@ class Role extends PureComponent<RoleProps, RoleState> {
     });
   };
 
-  handleTableChange = (pagination: any) => {
+  handleTableChange = ({ current, pageSize, total }: any) => {
     this.dispatch({
       type: 'role/fetch',
-      pagination: {
-        current: pagination.current,
-        pageSize: pagination.pageSize,
-      },
+      pagination: { current, pageSize, total },
     });
     this.clearSelectRows();
   };

@@ -6,6 +6,7 @@ import * as roleService from '@/services/role';
 
 export interface RoleModeState {
   search?: any;
+  pagination?: Pagination;
   data?: {
     list?: any;
     pagination?: Pagination;
@@ -45,9 +46,20 @@ const Role: RoleModeType = {
   namespace: 'role',
   state: {
     search: {},
+    pagination: {
+      current: 1,
+      pageSize: 10,
+      pageSizeOptions: ['15', '30', '45', '60'],
+      total: 0,
+    },
     data: {
       list: [],
-      pagination: {},
+      pagination: {
+        current: 1,
+        pageSize: 10,
+        pageSizeOptions: ['15', '30', '45', '60'],
+        total: 0,
+      },
     },
     submitting: false,
     formTitle: '',
@@ -60,6 +72,7 @@ const Role: RoleModeType = {
     *fetch({ search, pagination }, { call, put, select }) {
       let params = {};
 
+      // 搜索条件
       if (search) {
         params = { ...params, ...search };
         yield put({
@@ -74,7 +87,9 @@ const Role: RoleModeType = {
       }
 
       if (pagination) {
-        params = { ...params, ...pagination };
+        const { current, pageSize } = pagination;
+        const page = { page: current, per_page: pageSize };
+        params = { ...params, ...page };
         yield put({
           type: 'savePagination',
           payload: pagination,
