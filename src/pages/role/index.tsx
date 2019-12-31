@@ -97,6 +97,7 @@ class Role extends PureComponent<RoleProps, RoleState> {
     });
   };
 
+  // 选中项发生变化时的回调
   handleTableChange = ({ current, pageSize, total }: any) => {
     this.dispatch({
       type: 'role/fetch',
