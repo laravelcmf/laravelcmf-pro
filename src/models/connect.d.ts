@@ -4,10 +4,11 @@ import { RouterTypes } from 'umi';
 import { GlobalModelState } from './global';
 import { DefaultSettings as SettingModelState } from '../../config/defaultSettings';
 import { StateType } from './login';
+import { AdminModelState } from '@/models/admin';
 import { MenuModelState } from '@/models/menu';
 import { RoleModeState } from '@/models/role';
 
-export { GlobalModelState, SettingModelState, MenuModelState, RoleModeState };
+export { GlobalModelState, SettingModelState, AdminModelState, MenuModelState, RoleModeState };
 
 export interface Loading {
   global: boolean;
@@ -16,7 +17,7 @@ export interface Loading {
     global?: boolean;
     menu?: boolean;
     setting?: boolean;
-    user?: boolean;
+    admin?: boolean;
     login?: boolean;
     role?: boolean;
   };
@@ -27,6 +28,7 @@ export interface ConnectState {
   loading: Loading;
   settings: SettingModelState;
   login: StateType;
+  admin: AdminModelState;
   menu: MenuModelState;
   role: RoleModeState;
 }

@@ -1,6 +1,6 @@
 import Link from 'umi/link';
-import PageHeader from '@/components/PageHeader';
 import React from 'react';
+import PageHeader from '@/components/PageHeader';
 import styles from './PageHeaderLayout.less';
 
 export interface PageHeaderLayoutProps {

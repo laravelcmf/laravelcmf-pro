@@ -3,10 +3,11 @@ import Redirect from 'umi/redirect';
 import { connect } from 'dva';
 import Authorized from '@/utils/Authorized';
 import { getRouteAuthority } from '@/utils/utils';
-import { ConnectProps, ConnectState, UserModelState } from '@/models/connect';
+import { ConnectProps, ConnectState } from '@/models/connect';
+import { CurrentUser } from '@/models/global';
 
 interface AuthComponentProps extends ConnectProps {
-  user: UserModelState;
+  user: CurrentUser;
 }
 
 const AuthComponent: React.FC<AuthComponentProps> = ({
@@ -19,7 +20,7 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
   },
   user,
 }) => {
-  const { currentUser } = user;
+  const currentUser = user;
   const { routes = [] } = route;
   const isLogin = currentUser && currentUser.name;
   return (
@@ -32,6 +33,6 @@ const AuthComponent: React.FC<AuthComponentProps> = ({
   );
 };
 
-export default connect(({ user }: ConnectState) => ({
-  user,
+export default connect(({ global }: ConnectState) => ({
+  currentUser: global.user,
 }))(AuthComponent);

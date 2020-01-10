@@ -7,6 +7,7 @@ import * as roleService from '@/services/role';
 export interface RoleModeState {
   search?: any;
   pagination?: Pagination;
+  fetchList?: any;
   data?: {
     list?: any;
     pagination?: Pagination;
@@ -24,6 +25,7 @@ export interface RoleModeType {
   state: RoleModeState;
   effects: {
     fetch: Effect;
+    fetchList: Effect;
     loadForm: Effect;
     fetchForm: Effect;
     submit: Effect;
@@ -31,6 +33,7 @@ export interface RoleModeType {
   };
   reducers: {
     saveData: Reducer<RoleModeState>;
+    saveList: Reducer<RoleModeState>;
     saveSearch: Reducer<RoleModeState>;
     savePagination: Reducer<RoleModeState>;
     changeFormVisible: Reducer<RoleModeState>;
@@ -52,6 +55,7 @@ const Role: RoleModeType = {
       pageSizeOptions: ['15', '30', '45', '60'],
       total: 0,
     },
+    fetchList: [],
     data: {
       list: [],
       pagination: {
@@ -104,6 +108,13 @@ const Role: RoleModeType = {
       const response = yield call(roleService.query, params);
       yield put({
         type: 'saveData',
+        payload: response.data || {},
+      });
+    },
+    *fetchList({ payload }, { call, put }) {
+      const response = yield call(roleService.list, payload);
+      yield put({
+        type: 'saveList',
         payload: response.data || {},
       });
     },
@@ -222,6 +233,9 @@ const Role: RoleModeType = {
           },
         },
       };
+    },
+    saveList(state, { payload }) {
+      return { ...state, fetchList: payload };
     },
     saveSearch(state, { payload }) {
       return { ...state, search: payload };

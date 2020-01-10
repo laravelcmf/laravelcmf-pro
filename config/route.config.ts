@@ -6,7 +6,7 @@ export default [
       {
         name: 'login',
         path: '/login',
-        component: './user/login',
+        component: './login',
       },
     ],
   },
@@ -45,6 +45,12 @@ export default [
                 name: 'menu',
                 icon: 'audit',
                 component: './role',
+              },
+              {
+                path: '/system/user',
+                name: 'user',
+                icon: 'user',
+                component: './user',
               },
             ],
           },

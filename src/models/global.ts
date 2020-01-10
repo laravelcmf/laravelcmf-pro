@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { Subscription, Effect } from 'dva';
 
-import { queryCurrent, queryMenuTree } from '@/services/user';
+import { queryCurrent, queryMenuTree } from '@/services/admin';
 
 // 分页
 export interface Pagination {

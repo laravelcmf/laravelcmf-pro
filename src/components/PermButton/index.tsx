@@ -1,6 +1,6 @@
+import React from 'react';
 import { Button } from 'antd';
 import { GlobalContext } from '@/utils/context';
-import React from 'react';
 
 export default (param: any) => {
   const { code, children, ...rest } = param;

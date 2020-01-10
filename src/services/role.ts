@@ -8,6 +8,14 @@ export async function query(params: any) {
   });
 }
 
+// 列表
+export async function list(params?: any) {
+  return request('/api/roles/list', {
+    method: 'GET',
+    params,
+  });
+}
+
 // 查看
 export async function get(id: number) {
   return request(`/api/roles/${id}`, {
