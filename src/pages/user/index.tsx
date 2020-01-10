@@ -264,6 +264,11 @@ class UserList extends PureComponent<UserListProps, UserListState> {
         width: 150,
       },
       {
+        title: '登录地点',
+        dataIndex: 'login_address',
+        width: 250,
+      },
+      {
         title: '登录次数',
         dataIndex: 'login_count',
         width: 100,
