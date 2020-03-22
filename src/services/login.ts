@@ -11,3 +11,9 @@ export async function AccountLogin(params: LoginParamsType) {
     data: params,
   });
 }
+
+export async function Logout(): Promise<any> {
+  return request('/api/oauth/token', {
+    method: 'DELETE',
+  });
+}

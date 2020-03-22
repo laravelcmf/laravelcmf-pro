@@ -5,7 +5,7 @@ import router from 'umi/router';
 
 import store from '@/utils/store';
 import { getPageQuery } from '@/utils/utils';
-import { AccountLogin } from '@/services/login';
+import { AccountLogin, Logout } from '@/services/login';
 
 export interface StateType {
   status?: 'ok' | 'error';
@@ -34,15 +34,14 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const { response, data } = yield call(AccountLogin, payload);
+      const response = yield call(AccountLogin, payload);
       // Login successfully
-      if (response && data && response.status === 201 && data.expires_in && data.expires_in > 0) {
+      if (response && response.expires_in && response.expires_in > 0) {
         yield put({
           type: 'changeLoginStatus',
           payload: response,
         });
-
-        store.setAccessToken(data);
+        store.setAccessToken(response);
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -63,7 +62,9 @@ const Model: LoginModelType = {
       }
     },
 
-    logout() {
+    *logout({ payload }, { call }) {
+      yield call(Logout, payload);
+      store.clearAccessToken();
       const { redirect } = getPageQuery();
       // Note: There may be security issues, please note
       if (window.location.pathname !== '/user/login' && !redirect) {
