@@ -108,31 +108,31 @@ export default class MenuAction extends PureComponent<MenuActionProps, MenuActio
         code: 'query',
         name: `查询${item.name}`,
         method: 'GET',
-        path: item.router,
+        path: `${item.router}.index`,
       },
       {
         code: 'get',
         name: `精确查询${item.name}`,
         method: 'GET',
-        path: `${item.router}/:id`,
+        path: `${item.router}.show`,
       },
       {
         code: 'create',
         name: `创建${item.name}`,
         method: 'POST',
-        path: item.router,
+        path: `${item.router}.store`,
       },
       {
         code: 'update',
         name: `更新${item.name}`,
         method: 'PUT',
-        path: `${item.router}/:id`,
+        path: `${item.router}.update`,
       },
       {
         code: 'delete',
         name: `删除${item.name}`,
         method: 'DELETE',
-        path: `${item.router}/:id`,
+        path: `${item.router}.destroy`,
       },
     ];
 
