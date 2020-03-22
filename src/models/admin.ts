@@ -63,7 +63,6 @@ const UserModel: AdminModelType = {
   effects: {
     *fetch({ search, pagination }, { call, put, select }) {
       let params = {};
-
       if (search) {
         params = { ...params, ...search };
         yield put({
@@ -144,7 +143,7 @@ const UserModel: AdminModelType = {
       const response = yield call(adminService.get, payload);
       yield put({
         type: 'saveFormData',
-        payload: response.data || {},
+        payload: response || {},
       });
     },
     *submit({ payload }, { call, put, select }) {
@@ -167,10 +166,8 @@ const UserModel: AdminModelType = {
         type: 'changeSubmitting',
         payload: false,
       });
-      if (
-        response.response &&
-        (response.response.status === 204 || response.response.status === 201)
-      ) {
+
+      if (response.id && response.id !== '') {
         message.success('保存成功');
         yield put({
           type: 'changeFormVisible',
@@ -182,24 +179,22 @@ const UserModel: AdminModelType = {
       }
     },
     *del({ payload }, { call, put }) {
-      const response = yield call(adminService.del, payload.id);
-      console.log('response:', response);
-      if (response.response.status) {
-        message.success('删除成功');
-        yield put({ type: 'fetch' });
-      }
+      yield call(adminService.del, payload.id);
+      message.success('删除成功');
+      yield put({ type: 'fetch' });
     },
     *changeStatus({ payload }, { call, select }) {
-      let response;
       if (payload.status === 1) {
-        response = yield call(adminService.enable, payload.id);
+        yield call(adminService.enable, payload.id);
       } else {
-        response = yield call(adminService.disable, payload.id);
+        yield call(adminService.disable, payload.id);
       }
 
-      if (response.response.status === 204) {
-        let msg = '启用成功';
-        if (payload.status === 2) {
+      if (payload.status) {
+        let msg = '';
+        if (payload.status === 1) {
+          msg = '启用成功';
+        } else if (payload.status === 2) {
           msg = '停用成功';
         }
         message.success(msg);
@@ -216,23 +211,19 @@ const UserModel: AdminModelType = {
     },
   },
   reducers: {
-    saveData(
-      state,
-      {
-        payload: {
-          data,
-          meta: { current_page: current = 1, per_page: pageSize = 15, total = 0 },
-        },
-      },
-    ) {
+    saveData(state, { payload }) {
+      const {
+        data,
+        meta: { pagination },
+      } = payload;
       return {
         ...state,
         data: {
           list: data,
           pagination: {
-            current: parseInt(current, 10),
-            pageSize: parseInt(pageSize, 10),
-            total: parseInt(total, 10),
+            current: parseInt(pagination.current_page, 10),
+            pageSize: parseInt(pagination.per_page, 10),
+            total: parseInt(pagination.total, 10),
           },
         },
       };

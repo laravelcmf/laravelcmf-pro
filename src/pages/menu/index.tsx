@@ -54,7 +54,6 @@ class MenuList extends PureComponent<MenuListProps, MenuListState> {
     if (selectedRows.length === 0) {
       return;
     }
-
     const { id: Id } = selectedRows[0];
     this.dispatch({
       type: 'menu/loadForm',

@@ -20,7 +20,11 @@ export async function queryTree(params: any) {
 
 // 查看菜单
 export async function get({ id }: any) {
-  return request(`/api/${router}/${id}`);
+  const p = { include: 'actions,resources' };
+  return request(`/api/${router}/${id}`, {
+    method: 'GET',
+    params: p,
+  });
 }
 
 // 新增菜单

@@ -178,7 +178,7 @@ class MenuCard extends PureComponent<MenuCardProps> {
               <Col span={24}>
                 <Card title="动作管理" bordered={false}>
                   {getFieldDecorator('actions', {
-                    initialValue: formData.actions,
+                    initialValue: formData.actions ? formData.actions.data : null,
                   })(<MenuAction />)}
                 </Card>
               </Col>
@@ -187,7 +187,7 @@ class MenuCard extends PureComponent<MenuCardProps> {
               <Col span={24}>
                 <Card title="资源管理(服务端路由)" bordered={false}>
                   {getFieldDecorator('resources', {
-                    initialValue: formData.resources,
+                    initialValue: formData.resources ? formData.resources.data : null,
                   })(<MenuResource />)}
                 </Card>
               </Col>

@@ -7,7 +7,6 @@ import { connect } from 'dva';
 import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import RoleSelect from './RoleSelect';
 import UserCard from './UserCard';
-import { formatDate } from '@/utils/utils';
 import styles from './index.less';
 import PButton from '@/components/PermButton';
 import { ConnectState, AdminModelState } from '@/models/connect';
@@ -233,10 +232,8 @@ class UserList extends PureComponent<UserListProps, UserListState> {
       loading,
       admin: { data },
     } = this.props;
-
     const { list, pagination } = data || {};
     const { selectedRows, selectedRowKeys } = this.state;
-
     const columns = [
       {
         title: '序号',
@@ -290,13 +287,11 @@ class UserList extends PureComponent<UserListProps, UserListState> {
       {
         title: '创建时间',
         dataIndex: 'created_at',
-        render: (val: any) => <span>{formatDate(val, 'YYYY-MM-DD HH:mm')}</span>,
         width: 200,
       },
       {
         title: '最近登录',
         dataIndex: 'updated_at',
-        render: (val: any) => <span>{formatDate(val, 'YYYY-MM-DD HH:mm')}</span>,
       },
     ];
 

@@ -11,9 +11,7 @@ export async function query(params: any): Promise<any> {
 
 // 查看
 export async function get({ id }: { id: number }): Promise<any> {
-  return request(`/api/admins/${id}`, {
-    method: 'GET',
-  });
+  return request(`/api/admins/${id}`);
 }
 
 // 新增

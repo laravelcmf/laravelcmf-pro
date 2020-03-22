@@ -114,7 +114,6 @@ const MenuModel: MenuModelType = {
         type: 'changeFormVisible',
         payload: true,
       });
-
       yield [
         put({
           type: 'saveFormType',
@@ -162,7 +161,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.get, payload);
       yield put({
         type: 'saveFormData',
-        payload: response.data || {},
+        payload: response || {},
       });
     },
     *submit({ payload }, { call, put, select }) {
@@ -181,7 +180,7 @@ const MenuModel: MenuModelType = {
       } else {
         response = yield call(menuService.create, params);
       }
-      response = response.data || {};
+      response = response || {};
       if (response.id && response.id !== '') {
         success = true;
       }
@@ -228,7 +227,7 @@ const MenuModel: MenuModelType = {
       {
         payload: {
           data,
-          meta: { current_page: current = 1, per_page: pageSize = 15, total = 0 },
+          meta: { pagination },
         },
       },
     ) {
@@ -237,9 +236,9 @@ const MenuModel: MenuModelType = {
         data: {
           list: data,
           pagination: {
-            current: parseInt(current, 10),
-            pageSize: parseInt(pageSize, 10),
-            total: parseInt(total, 10),
+            current: parseInt(pagination.current_page, 10),
+            pageSize: parseInt(pagination.per_page, 10),
+            total: parseInt(pagination.total, 10),
           },
         },
       };
