@@ -106,7 +106,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.query, params);
       yield put({
         type: 'saveMenu',
-        payload: response.data || {},
+        payload: response || {},
       });
     },
     *loadForm({ payload }, { put, select }) {

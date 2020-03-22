@@ -181,8 +181,9 @@ export default {
   // chainWebpack: webpackPlugin,
   proxy: {
     '/api': {
-      target: 'http://laravelcmf.test',
+      target: 'http://api.laravelcmf.test',
       changeOrigin: true,
+      pathRewrite: { '^/api': '' },
     },
   },
 } as IConfig;

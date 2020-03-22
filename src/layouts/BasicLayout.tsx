@@ -136,7 +136,6 @@ const BasicLayout: React.FC<BasicLayoutProps> = props => {
   // };
 
   // get children authority
-
   return (
     <ProLayout
       logo={logo}

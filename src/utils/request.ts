@@ -63,7 +63,7 @@ const request = extend({
   useCache: false, // 是否使用缓存,只有get时有效, 默认关闭, 启用后如果命中缓存, response中有useCache=true. 另: 内存缓存, 刷新就没.
   errorHandler, // 默认错误处理
   // credentials: 'include', // 默认请求是否带上cookie
-  getResponse: true, // 是否获取response源
+  getResponse: false, // 是否获取response源
 });
 
 function getAccessToken(): string {
@@ -87,6 +87,7 @@ request.interceptors.request.use((url, options) => {
         interceptors: true,
         headers: {
           ...options.headers,
+          Accept: 'application/json',
           Authorization: getAccessToken(),
         },
         params: {

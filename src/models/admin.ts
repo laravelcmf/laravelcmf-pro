@@ -95,7 +95,7 @@ const UserModel: AdminModelType = {
       const response = yield call(adminService.query, params);
       yield put({
         type: 'saveData',
-        payload: response.data || {},
+        payload: response || {},
       });
     },
     *loadForm({ payload }, { put }) {

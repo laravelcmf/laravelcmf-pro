@@ -108,7 +108,7 @@ const Role: RoleModeType = {
       const response = yield call(roleService.query, params);
       yield put({
         type: 'saveData',
-        payload: response.data || {},
+        payload: response || {},
       });
     },
     *fetchList({ payload }, { call, put }) {
