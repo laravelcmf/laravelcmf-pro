@@ -179,9 +179,9 @@ class Role extends PureComponent<RoleProps, RoleState> {
           <Col md={8}>
             <div style={{ overflow: 'hidden' }}>
               <span style={{ marginBottom: 24 }}>
-                <Button type="primary" htmlType="submit">
+                <PButton code="query" htmlType="submit" type="primary">
                   查询
-                </Button>
+                </PButton>
                 <Button style={{ marginLeft: 8 }} onClick={this.handleResetFormClick}>
                   重置
                 </Button>

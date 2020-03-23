@@ -4,11 +4,11 @@ import React, { PureComponent } from 'react';
 
 import { FormComponentProps } from 'antd/lib/form';
 import { connect } from 'dva';
-import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import RoleSelect from './RoleSelect';
 import UserCard from './UserCard';
 import styles from './index.less';
 import PButton from '@/components/PermButton';
+import PageHeaderLayout from '../../layouts/PageHeaderLayout';
 import { ConnectState, AdminModelState } from '@/models/connect';
 
 export interface UserListProps extends FormComponentProps {

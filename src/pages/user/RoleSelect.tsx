@@ -58,11 +58,12 @@ export default class RoleSelect extends PureComponent<RoleSelectProps, RoleSelec
         placeholder="请选择角色"
         style={{ width: '100%' }}
       >
-        {data.map((item: any) => (
-          <Select.Option key={item.id} value={item.id}>
-            {item.name}
-          </Select.Option>
-        ))}
+        {data &&
+          data.map((item: any) => (
+            <Select.Option key={item.id} value={item.id}>
+              {item.name}
+            </Select.Option>
+          ))}
       </Select>
     );
   }
