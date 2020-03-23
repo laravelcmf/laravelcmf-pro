@@ -60,10 +60,9 @@ const errorHandler = (error: { response: Response; data: any }): any | Response 
  * 配置request请求时的默认参数
  */
 const request = extend({
-  useCache: false, // 是否使用缓存,只有get时有效, 默认关闭, 启用后如果命中缓存, response中有useCache=true. 另: 内存缓存, 刷新就没.
   errorHandler, // 默认错误处理
-  // credentials: 'include', // 默认请求是否带上cookie
-  getResponse: false, // 是否获取response源
+  credentials: 'include', // 默认请求是否带上cookie
+  getResponse: true,
 });
 
 function getAccessToken(): string {

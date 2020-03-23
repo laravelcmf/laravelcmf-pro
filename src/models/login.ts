@@ -34,14 +34,13 @@ const Model: LoginModelType = {
 
   effects: {
     *login({ payload }, { call, put }) {
-      const response = yield call(AccountLogin, payload);
+      const { response, data } = yield call(AccountLogin, payload);
       // Login successfully
-      if (response && response.expires_in && response.expires_in > 0) {
+      if (response.status === 201 && data.expires_in && data.expires_in > 0) {
         yield put({
           type: 'changeLoginStatus',
-          payload: response,
+          payload: data,
         });
-        store.setAccessToken(response);
 
         const urlParams = new URL(window.location.href);
         const params = getPageQuery();
@@ -63,24 +62,26 @@ const Model: LoginModelType = {
     },
 
     *logout({ payload }, { call }) {
-      yield call(Logout, payload);
-      store.clearAccessToken();
-      const { redirect } = getPageQuery();
-      // Note: There may be security issues, please note
-      if (window.location.pathname !== '/user/login' && !redirect) {
-        router.replace({
-          pathname: '/user/login',
-          search: stringify({
-            redirect: window.location.href,
-          }),
-        });
+      const { response } = yield call(Logout, payload);
+      if (response.status === 204) {
+        store.clearAccessToken();
+        const { redirect } = getPageQuery();
+        // Note: There may be security issues, please note
+        if (window.location.pathname !== '/user/login' && !redirect) {
+          router.replace({
+            pathname: '/user/login',
+            search: stringify({
+              redirect: window.location.href,
+            }),
+          });
+        }
       }
     },
   },
 
   reducers: {
     changeLoginStatus(state, { payload }) {
-      // setAuthority(payload.currentAuthority);
+      store.setAccessToken(payload);
       return {
         ...state,
         status: payload.status,

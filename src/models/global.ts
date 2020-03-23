@@ -1,10 +1,11 @@
 import { Reducer } from 'redux';
 import { Subscription, Effect } from 'dva';
 
+import { GetCollection } from '@/utils/response';
 import { queryCurrent, queryMenuTree } from '@/services/admin';
 
 // 分页
-export interface Pagination {
+export interface pagination {
   current?: number; // 当前页数
   pageSize?: number; // 每页条数
   pageSizeOptions?: string[]; // 指定每页可以显示多少条
@@ -143,10 +144,10 @@ const GlobalModel: GlobalModelType = {
 
     // 获取我的信息
     *fetchUser({ success }, { call, put }) {
-      const response = yield call(queryCurrent);
+      const { data } = yield call(queryCurrent);
       yield put({
         type: 'saveUser',
-        payload: response,
+        payload: data,
       });
       if (success) success();
     },
@@ -154,7 +155,7 @@ const GlobalModel: GlobalModelType = {
     // 获取我的树形菜单
     *fetchMenuTree({ pathname }, { call, put }) {
       const response = yield call(queryMenuTree);
-      const menuData = response.data || [];
+      const menuData = GetCollection(response).data || [];
       yield put({
         type: 'saveMenus',
         payload: menuData,

@@ -91,10 +91,10 @@ const UserModel: AdminModelType = {
         }
       }
 
-      const response = yield call(adminService.query, params);
+      const { data } = yield call(adminService.query, params);
       yield put({
         type: 'saveData',
-        payload: response || {},
+        payload: data || {},
       });
     },
     *loadForm({ payload }, { put }) {
@@ -140,10 +140,10 @@ const UserModel: AdminModelType = {
       }
     },
     *fetchForm({ payload }, { call, put }) {
-      const response = yield call(adminService.get, payload);
+      const { data } = yield call(adminService.get, payload);
       yield put({
         type: 'saveFormData',
-        payload: response || {},
+        payload: data || {},
       });
     },
     *submit({ payload }, { call, put, select }) {
