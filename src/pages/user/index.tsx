@@ -243,17 +243,17 @@ class UserList extends PureComponent<UserListProps, UserListState> {
       {
         title: '用户名',
         dataIndex: 'name',
-        width: 200,
+        width: 150,
       },
       {
         title: '邮箱',
         dataIndex: 'email',
-        width: 250,
+        width: 200,
       },
       {
         title: '角色名称',
         dataIndex: 'role.name',
-        width: 200,
+        width: 150,
       },
       {
         title: '登录IP',
@@ -263,7 +263,7 @@ class UserList extends PureComponent<UserListProps, UserListState> {
       {
         title: '登录地点',
         dataIndex: 'login_address',
-        width: 250,
+        width: 200,
       },
       {
         title: '登录次数',
@@ -287,11 +287,12 @@ class UserList extends PureComponent<UserListProps, UserListState> {
       {
         title: '创建时间',
         dataIndex: 'created_at',
-        width: 200,
+        width: 150,
       },
       {
         title: '最近登录',
         dataIndex: 'updated_at',
+        width: 150,
       },
     ];
 

@@ -2,6 +2,7 @@ import React, { PureComponent } from 'react';
 
 import { Select } from 'antd';
 import { list } from '@/services/role';
+import { GetCollection } from '@/utils/response';
 
 export interface RoleSelectProps {
   value?: any;
@@ -25,7 +26,7 @@ export default class RoleSelect extends PureComponent<RoleSelectProps, RoleSelec
 
   componentDidMount() {
     list().then(response => {
-      this.setState({ data: response.data || [] });
+      this.setState({ data: GetCollection(response) || [] });
     });
   }
 
@@ -58,12 +59,11 @@ export default class RoleSelect extends PureComponent<RoleSelectProps, RoleSelec
         placeholder="请选择角色"
         style={{ width: '100%' }}
       >
-        {data &&
-          data.map((item: any) => (
-            <Select.Option key={item.id} value={item.id}>
-              {item.name}
-            </Select.Option>
-          ))}
+        {data.map((item: any) => (
+          <Select.Option key={item.id} value={item.id}>
+            {item.name}
+          </Select.Option>
+        ))}
       </Select>
     );
   }

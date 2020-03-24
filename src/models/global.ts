@@ -1,7 +1,7 @@
 import { Reducer } from 'redux';
 import { Subscription, Effect } from 'dva';
 
-import { GetCollection } from '@/utils/response';
+import { GetCollection, GetItem } from '@/utils/response';
 import { queryCurrent, queryMenuTree } from '@/services/admin';
 
 // 分页
@@ -144,10 +144,10 @@ const GlobalModel: GlobalModelType = {
 
     // 获取我的信息
     *fetchUser({ success }, { call, put }) {
-      const { data } = yield call(queryCurrent);
+      const response = yield call(queryCurrent);
       yield put({
         type: 'saveUser',
-        payload: data,
+        payload: GetItem(response),
       });
       if (success) success();
     },

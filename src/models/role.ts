@@ -3,6 +3,7 @@ import { Reducer } from 'redux';
 import { message } from 'antd';
 import { Pagination } from '@/models/global';
 import * as roleService from '@/services/role';
+import { GetItem, GetCollection, GetPaginator } from '@/utils/response';
 
 export interface RoleModeState {
   search?: any;
@@ -108,14 +109,14 @@ const Role: RoleModeType = {
       const response = yield call(roleService.query, params);
       yield put({
         type: 'saveData',
-        payload: response || {},
+        payload: GetPaginator(response) || {},
       });
     },
     *fetchList({ payload }, { call, put }) {
       const response = yield call(roleService.list, payload);
       yield put({
         type: 'saveList',
-        payload: response.data || {},
+        payload: GetCollection(response) || {},
       });
     },
     *loadForm({ payload }, { put }) {
@@ -165,7 +166,7 @@ const Role: RoleModeType = {
       yield [
         put({
           type: 'saveFormData',
-          payload: response || {},
+          payload: GetItem(response) || {},
         }),
       ];
     },
@@ -191,8 +192,7 @@ const Role: RoleModeType = {
         payload: false,
       });
 
-      response = response || {};
-      if (response.id && response.id !== '') {
+      if (response.data.id && response.data.id !== '') {
         message.success('保存成功');
         yield put({
           type: 'changeFormVisible',

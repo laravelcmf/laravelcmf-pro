@@ -1,6 +1,7 @@
 // get item.
 export function GetItem(result: any) {
-  return result;
+  const { data } = result;
+  return data;
 }
 
 // get collection.

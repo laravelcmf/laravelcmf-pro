@@ -181,8 +181,8 @@ const MenuModel: MenuModelType = {
       } else {
         response = yield call(menuService.create, params);
       }
-      response = response || {};
-      if (response.id && response.id !== '') {
+
+      if (response.data.id && response.data.id !== '') {
         success = true;
       }
 
@@ -203,8 +203,8 @@ const MenuModel: MenuModelType = {
       }
     },
     *del({ payload }, { call, put }) {
-      const response = yield call(menuService.del, payload);
-      if (response.status === 'OK') {
+      const { response } = yield call(menuService.del, payload);
+      if (response.status === 200) {
         message.success('删除成功');
         yield put({ type: 'fetchTree' });
         yield put({ type: 'fetch' });

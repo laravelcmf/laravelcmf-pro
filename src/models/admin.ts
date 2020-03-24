@@ -3,6 +3,7 @@ import { Reducer } from 'redux';
 import { message } from 'antd';
 import * as adminService from '@/services/admin';
 import { Pagination } from '@/models/global';
+import { GetItem, GetPaginator } from '@/utils/response';
 
 export interface AdminModelState {
   search?: any;
@@ -91,10 +92,10 @@ const UserModel: AdminModelType = {
         }
       }
 
-      const { data } = yield call(adminService.query, params);
+      const response = yield call(adminService.query, params);
       yield put({
         type: 'saveData',
-        payload: data || {},
+        payload: GetPaginator(response) || {},
       });
     },
     *loadForm({ payload }, { put }) {
@@ -140,10 +141,10 @@ const UserModel: AdminModelType = {
       }
     },
     *fetchForm({ payload }, { call, put }) {
-      const { data } = yield call(adminService.get, payload);
+      const response = yield call(adminService.get, payload);
       yield put({
         type: 'saveFormData',
-        payload: data || {},
+        payload: GetItem(response) || {},
       });
     },
     *submit({ payload }, { call, put, select }) {
@@ -167,7 +168,7 @@ const UserModel: AdminModelType = {
         payload: false,
       });
 
-      if (response.id && response.id !== '') {
+      if (response.data.id !== '') {
         message.success('保存成功');
         yield put({
           type: 'changeFormVisible',
@@ -179,18 +180,21 @@ const UserModel: AdminModelType = {
       }
     },
     *del({ payload }, { call, put }) {
-      yield call(adminService.del, payload.id);
-      message.success('删除成功');
-      yield put({ type: 'fetch' });
+      const { response } = yield call(adminService.del, payload.id);
+      if (response.status === 204) {
+        message.success('删除成功');
+        yield put({ type: 'fetch' });
+      }
     },
     *changeStatus({ payload }, { call, select }) {
+      let response;
       if (payload.status === 1) {
-        yield call(adminService.enable, payload.id);
+        response = yield call(adminService.enable, payload.id);
       } else {
-        yield call(adminService.disable, payload.id);
+        response = yield call(adminService.disable, payload.id);
       }
 
-      if (payload.status) {
+      if (response.response.status === 204) {
         let msg = '';
         if (payload.status === 1) {
           msg = '启用成功';
