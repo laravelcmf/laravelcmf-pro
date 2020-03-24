@@ -5,7 +5,7 @@ import { GetCollection } from '@/utils/response';
 import { queryCurrent, queryMenuTree } from '@/services/admin';
 
 // 分页
-export interface pagination {
+export interface Pagination {
   current?: number; // 当前页数
   pageSize?: number; // 每页条数
   pageSizeOptions?: string[]; // 指定每页可以显示多少条
@@ -155,7 +155,7 @@ const GlobalModel: GlobalModelType = {
     // 获取我的树形菜单
     *fetchMenuTree({ pathname }, { call, put }) {
       const response = yield call(queryMenuTree);
-      const menuData = GetCollection(response).data || [];
+      const menuData = GetCollection(response) || [];
       yield put({
         type: 'saveMenus',
         payload: menuData,

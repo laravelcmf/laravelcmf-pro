@@ -3,6 +3,7 @@ import { Reducer } from 'redux';
 import { message } from 'antd';
 import * as menuService from '@/services/menu';
 import { Pagination } from '@/models/global';
+import { GetPaginator, GetCollection, GetItem } from '@/utils/response';
 
 export interface MenuModelState {
   search?: any;
@@ -106,7 +107,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.query, params);
       yield put({
         type: 'saveMenu',
-        payload: response || {},
+        payload: GetPaginator(response) || {},
       });
     },
     *loadForm({ payload }, { put, select }) {
@@ -161,7 +162,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.get, payload);
       yield put({
         type: 'saveFormData',
-        payload: response || {},
+        payload: GetItem(response) || {},
       });
     },
     *submit({ payload }, { call, put, select }) {
@@ -217,7 +218,7 @@ const MenuModel: MenuModelType = {
       const response = yield call(menuService.queryTree, params);
       yield put({
         type: 'saveTreeData',
-        payload: response.data || [],
+        payload: GetCollection(response) || [],
       });
     },
   },
