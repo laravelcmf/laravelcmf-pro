@@ -2,6 +2,7 @@ import { Table } from 'antd';
 import React, { PureComponent } from 'react';
 
 import EditableCell from './EditableCell';
+import { GetCollection } from '@/utils/response';
 import * as menuService from '@/services/menu';
 
 export interface RoleMenuProps {
@@ -55,7 +56,7 @@ export default class RoleMenu extends PureComponent<RoleMenuProps, RoleMenuState
 
   componentDidMount(): void {
     menuService.queryTree({ include: 'actions,resources' }).then((response: any) => {
-      const list = response.data || [];
+      const list = GetCollection(response) || [];
       this.setState({ menuData: this.fillData(list) });
     });
   }
